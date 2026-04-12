@@ -11,5 +11,6 @@ namespace pins {
     constexpr int ECHO_1_PIN = 11;
     constexpr int TRIG_2_PIN = 12;
     constexpr int ECHO_2_PIN = 13;
+    constexpr int DQ_PIN = 14;
 }
 #endif
