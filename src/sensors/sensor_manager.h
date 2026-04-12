@@ -4,5 +4,7 @@ namespace sensor_manager {
     void initialize_all();
     float get_distance_ultrasonic_1();
     float get_distance_ultrasonic_2();
+    float get_temperature_c_1();
+    float get_temperature_c_2();
 }
 #endif
