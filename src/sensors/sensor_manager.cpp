@@ -44,6 +44,10 @@ namespace sensor_manager {
         return distance;
     }
 
+    float update_all() {
+        ds18b20::update();
+    }
+
     float get_temperature_c_1() {
         return ds18b20::get_temperature_c_1();
     }
