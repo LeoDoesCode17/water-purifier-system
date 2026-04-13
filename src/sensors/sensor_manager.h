@@ -6,6 +6,6 @@ namespace sensor_manager {
     float get_distance_ultrasonic_2();
     float get_temperature_c_1();
     float get_temperature_c_2();
-    float update_all();
+    void update_all();
 }
 #endif

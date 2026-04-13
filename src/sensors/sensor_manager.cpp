@@ -44,7 +44,7 @@ namespace sensor_manager {
         return distance;
     }
 
-    float update_all() {
+    void update_all() {
         ds18b20::update();
     }
 
