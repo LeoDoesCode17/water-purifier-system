@@ -2,6 +2,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "config/pins.h"
+#include "config/secrets.h"
 
 static OneWire one_wire(pins::DQ_PIN);
 static DallasTemperature ds_sensor(&one_wire);
@@ -17,11 +18,11 @@ namespace ds18b20 {
     }
 
     float get_temperature_c_1() {
-        return ds_sensor.getTempCByIndex(0);
+        return ds_sensor.getTempC(secret::DS18B20_ADDRESS_1);
     }
 
     float get_temperature_c_2() {
-        return ds_sensor.getTempCByIndex(1);
+        return ds_sensor.getTempC(secret::DS18B20_ADDRESS_2);
     }
 
     int get_device_disconnected() {
