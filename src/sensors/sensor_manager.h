@@ -6,6 +6,12 @@ namespace sensor_manager {
     float get_distance_ultrasonic_2();
     float get_temperature_c_1();
     float get_temperature_c_2();
+    float get_ph_value_1();
+    float get_ph_value_2();
+    float get_turbidity_ntu_value_1();
+    float get_turbidity_ntu_value_2();
+    float get_tds_ppm_value_1();
+    float get_tds_ppm_value_2();
     void update_all();
 }
 #endif
