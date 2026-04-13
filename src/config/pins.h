@@ -8,8 +8,9 @@ namespace pins {
     constexpr int PUMP_PIN = 6;
     constexpr int GEAR_MOTOR_PIN = 7;
     constexpr int TRIG_1_PIN = 10;
-    constexpr int ECHI_1_PIN = 11;
+    constexpr int ECHO_1_PIN = 11;
     constexpr int TRIG_2_PIN = 12;
     constexpr int ECHO_2_PIN = 13;
+    constexpr int DQ_PIN = 14;
 }
 #endif
