@@ -8,7 +8,7 @@
 
 static float SPEED_SOUND_CM_PER_MICROSECONDS = 0.0343; 
 static float ph_calibration = 20.0; 
-static float tds_factor = 0.99;
+static float tds_factor = 0.55;
 namespace sensor_manager {
     void initialize_all() {
         ultrasonic::initialize();
@@ -78,14 +78,16 @@ namespace sensor_manager {
 
     float get_turbidity_ntu_value_1() {
         float voltage_value = ads1115::get_voltage_value_1(0);
-        float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
-        return rough_turbidity_ntu;
+        // float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
+        // return rough_turbidity_ntu;
+        return voltage_value;
     }
 
     float get_turbidity_ntu_value_2() {
         float voltage_value = ads1115::get_voltage_value_2(0);
-        float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
-        return rough_turbidity_ntu;
+        // float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
+        // return rough_turbidity_ntu;
+        return voltage_value;
     }
 
     float get_tds_ppm_value_1() {
@@ -103,5 +105,6 @@ namespace sensor_manager {
         float water_temperature = ds18b20::get_temperature_c_2();
         float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
         float rough_ppm_value = electrical_conductivity_25 * 0.5;
+        return rough_ppm_value;
     }
 }
