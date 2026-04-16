@@ -90,13 +90,18 @@ namespace sensor_manager {
 
     float get_tds_ppm_value_1() {
         float voltage_value = ads1115::get_voltage_value_1(2);
-        float rough_ppm_value = voltage_value;
+        float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
+        float water_temperature = ds18b20::get_temperature_c_1();
+        float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
+        float rough_ppm_value = electrical_conductivity_25 * 0.5;
         return rough_ppm_value; 
     }
 
     float get_tds_ppm_value_2() {
         float voltage_value = ads1115::get_voltage_value_2(2);
-        float rough_ppm_value = voltage_value;
-        return rough_ppm_value; 
+        float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
+        float water_temperature = ds18b20::get_temperature_c_2();
+        float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
+        float rough_ppm_value = electrical_conductivity_25 * 0.5;
     }
 }
