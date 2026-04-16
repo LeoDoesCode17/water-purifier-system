@@ -4,10 +4,11 @@
 #include "sensors/ads1115.h"
 #include "config/pins.h"
 #include <Arduino.h>
+#include <math.h>
 
 static float SPEED_SOUND_CM_PER_MICROSECONDS = 0.0343; 
 static float ph_calibration = 20.0; 
-static float tds_factor = 0.5;
+static float tds_factor = 0.99;
 namespace sensor_manager {
     void initialize_all() {
         ultrasonic::initialize();
@@ -77,13 +78,13 @@ namespace sensor_manager {
 
     float get_turbidity_ntu_value_1() {
         float voltage_value = ads1115::get_voltage_value_1(0);
-        float rough_turbidity_ntu = map(voltage_value, 0, 3.3, 3000, 0); // rough approx
+        float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
         return rough_turbidity_ntu;
     }
 
     float get_turbidity_ntu_value_2() {
         float voltage_value = ads1115::get_voltage_value_2(0);
-        float rough_turbidity_ntu = map(voltage_value, 0, 3.3, 3000, 0); // rough approx
+        float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
         return rough_turbidity_ntu;
     }
 
