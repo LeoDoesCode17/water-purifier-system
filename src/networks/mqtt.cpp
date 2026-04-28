@@ -9,6 +9,12 @@ static WiFiClient espClient;
 static PubSubClient mqttClient(espClient);
 
 namespace mqtt {
+    void initialize() {
+      mqttClient.setServer(secret::MQTT_BROKER, secret::MQTT_PORT);
+    }
+    void set_callback(std::function<void (char *, uint8_t *, unsigned int)> callback) {
+      mqttClient.setCallback(callback);
+    }
     bool connect() {
         Serial.print("[MQTT] Connecting to broker: ");
         Serial.println(secret::MQTT_BROKER);
@@ -63,4 +69,5 @@ namespace mqtt {
         }
         return ok;
     }
+
 }

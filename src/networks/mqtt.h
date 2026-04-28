@@ -2,7 +2,8 @@
 #define NETWORKS_MQTT_H
 #include "config/types.h"
 namespace mqtt {
-    // void initialize();
+    void initialize();
+    void set_callback(std::function<void (char *, uint8_t *, unsigned int)> callback);
     bool connect();
     void loop();
     bool is_connected();
