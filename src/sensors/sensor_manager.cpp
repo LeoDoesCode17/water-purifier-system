@@ -66,14 +66,19 @@ namespace sensor_manager {
 
     float get_ph_value_1() {
         float voltage_value = ads1115::get_voltage_value_1(1);
-        float ph = 3.5 * voltage_value + ph_calibration;
-        return ph;
+        float voltageAtPH7 = 0.6;   // your calibrated 7.00 pH voltage
+        return 7.0 + (voltageAtPH7 - voltage_value) / 0.05916;
+        // float ph = 3.5 * voltage_value + ph_calibration;
+        // return ph;
     }
 
     float get_ph_value_2() {
         float voltage_value = ads1115::get_voltage_value_2(1);
-        float ph = 3.5 * voltage_value + ph_calibration;
-        return ph;
+        float voltageAtPH7 = 0.6;   // your calibrated 7.00 pH voltage
+        return 7.0 + (voltageAtPH7 - voltage_value) / 0.05916;
+        // return voltage_value;
+        // float ph = 3.5 * voltage_value + ph_calibration;
+        // return ph;
     }
 
     float get_turbidity_ntu_value_1() {
