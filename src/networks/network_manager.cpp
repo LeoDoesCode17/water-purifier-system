@@ -18,7 +18,7 @@ namespace network_manager {
     void reconnect_wifi() {
         wifi::initialize();
     }
-    
+
     bool mqtt_connect() {
         return mqtt::connect();
     }
@@ -27,7 +27,8 @@ namespace network_manager {
         mqtt::loop();
     }
 
-    bool mqtt_is_connected() {
+    bool     void reconnect_wifi();
+() {
         return mqtt::is_connected();
     }
 

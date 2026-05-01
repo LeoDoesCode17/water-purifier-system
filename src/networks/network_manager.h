@@ -7,7 +7,7 @@ namespace network_manager {
     void reconnect_wifi();
     bool mqtt_connect();
     void mqtt_loop();
-    bool mqtt_is_connected();
+    bool is_mqtt_connected();
     bool mqtt_publish_sensor_data(WaterQuality water_quality);
     bool mqtt_publish_status();
 }
