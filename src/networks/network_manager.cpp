@@ -15,6 +15,10 @@ namespace network_manager {
         return wifi::is_connected();
     }
 
+    void reconnect_wifi() {
+        wifi::initialize();
+    }
+    
     bool mqtt_connect() {
         return mqtt::connect();
     }

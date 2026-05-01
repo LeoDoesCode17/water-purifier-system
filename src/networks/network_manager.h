@@ -4,6 +4,7 @@
 namespace network_manager {
     void initialize();
     bool is_wifi_connected();
+    void reconnect_wifi();
     bool mqtt_connect();
     void mqtt_loop();
     bool mqtt_is_connected();
