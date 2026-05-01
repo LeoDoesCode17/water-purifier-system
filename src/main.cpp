@@ -23,20 +23,6 @@ void setup() {
 
   wifi::initialize();
   mqtt::initialize();
-  mqtt::set_callback([](char* topic, byte* payload, unsigned int length) {
-    Serial.println("\n========== MQTT MESSAGE RECEIVED ==========");
-    Serial.print("[MQTT] Topic   : ");
-    Serial.println(topic);
-
-    String message;
-    for (unsigned int i = 0; i < length; i++) {
-      message += (char)payload[i];
-    }
-
-    Serial.print("[MQTT] Payload : ");
-    Serial.println(message);
-    Serial.println("===========================================\n");
-  });
   mqtt::connect();
 }
 
