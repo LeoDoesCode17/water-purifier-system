@@ -4,11 +4,43 @@
 #include "config/secrets.h"
 #include <time.h>
 #include <ArduinoJson.h>  
+#include <time.h>
+
+static void init_time() {
+    configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+    
+    Serial.print("[TIME] Syncing");
+    time_t now = time(nullptr);
+    int retry = 0;
+    while (now <= 100000 && retry < 20) {
+        delay(500);
+        Serial.print(".");
+        now = time(nullptr);
+        retry++;
+    }
+    Serial.println();
+
+    if (now > 100000) {
+        Serial.println("[TIME] Time synchronized");
+    } else {
+        Serial.println("[TIME] Time sync failed");
+    }
+}
+
+static bool get_iso8601_utc(char* out, size_t len) {
+    time_t now = time(nullptr);
+    if (now <= 100000) return false;
+
+    struct tm timeinfo;
+    gmtime_r(&now, &timeinfo);
+    return strftime(out, len, "%Y-%m-%dT%H:%M:%SZ", &timeinfo) > 0;
+}
 
 namespace network_manager {
     void initialize() {
         wifi::initialize();
         mqtt::initialize();
+        init_time();
     }
 
     bool is_wifi_connected() {
@@ -27,8 +59,7 @@ namespace network_manager {
         mqtt::loop();
     }
 
-    bool     void reconnect_wifi();
-() {
+    bool is_mqtt_connected() {
         return mqtt::is_connected();
     }
 
@@ -54,14 +85,23 @@ namespace network_manager {
     }
 
     bool mqtt_publish_status() {
-        const unsigned long N = 256;
-        StaticJsonDocument<N> doc;
+        // const size_t DOC_CAPACITY = JSON_OBJECT_SIZE(4) + 128;
+        // const unsigned DOC_CAPACITY = 256;
+        // StaticJsonDocument<DOC_CAPACITY> doc;   
+        JsonDocument doc;   
+        char recorded_at[25];
+
+        if (!get_iso8601_utc(recorded_at, sizeof(recorded_at))) {
+            strcpy(recorded_at, "1970-01-01T00:00:00Z");
+        }
+        
         doc["mac_address"] = "00:1A:2B:3C:4D:5E";
         doc["status"] = "online";
         doc["message"] = "ESP Online";
-        doc["recorded_at"] = "2026-04-28T10:00:00Z";
+        doc["recorded_at"] = recorded_at;
 
-        char buffer[N];
+        char buffer[256];
+        
         size_t len = serializeJson(doc, buffer);
         bool ok = mqtt::publish(secret::MQTT_DEVICE_STATUS_PUB_TOPIC, (uint8_t*)buffer, len);
 
