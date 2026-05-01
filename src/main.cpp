@@ -5,8 +5,7 @@
 #include "config/secrets.h"
 #include "sensors/sensor_manager.h"
 #include "actuators/actuator_manager.h"
-#include "networks/wifi.h"
-#include "networks/mqtt.h"
+#include "networks/network_manager.h"
 #include "config/types.h"
 
 unsigned long lastPublish = 0;
@@ -21,25 +20,24 @@ void setup() {
   actuator_manager::initialize();
   delay(1000);
 
-  wifi::initialize();
-  mqtt::initialize();
-  mqtt::connect();
+  network_manager::initialize(); 
+  network_manager::mqtt_connect();
 }
 
 void loop() {
-  if (wifi::is_connected()) {
+  if (network_manager::is_wifi_connected()) {
     Serial.println("[WIFI] Disconnected. Reconnecting...");
-    wifi::initialize();
+    network_manager::reconnect_wifi();
   }
 
-  if (!mqtt::is_connected()) {
+  if (!network_manager::is_mqtt_connected()) {
     unsigned long now = millis();
     if (now - lastReconnectAttempt >= reconnectInterval) {
       lastReconnectAttempt = now;
-      mqtt::connect();
+      network_manager::mqtt_connect();
     }
   } else {
-    mqtt::loop();
+    network_manager::mqtt_loop();
   }
 
   unsigned long now = millis();
@@ -76,6 +74,6 @@ void loop() {
       .level=distance_1, 
       .temperature=temperature_1
     };
-    mqtt::publish(water_quality);
+    network_manager::mqtt_publish_sensor_data(water_quality);
   }
 }
