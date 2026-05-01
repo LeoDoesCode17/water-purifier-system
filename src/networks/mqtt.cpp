@@ -8,11 +8,24 @@
 static WiFiClient espClient;
 static PubSubClient mqttClient(espClient);
 
+static void callback(char* topic, byte* payload, unsigned int length) {
+    Serial.println("\n========== MQTT MESSAGE RECEIVED ==========");
+    Serial.print("[MQTT] Topic   : ");
+    Serial.println(topic);
+
+    String message;
+    for (unsigned int i = 0; i < length; i++) {
+      message += (char)payload[i];
+    }
+
+    Serial.print("[MQTT] Payload : ");
+    Serial.println(message);
+    Serial.println("===========================================\n");
+}
+
 namespace mqtt {
     void initialize() {
       mqttClient.setServer(secret::MQTT_BROKER, secret::MQTT_PORT);
-    }
-    void set_callback(std::function<void (char *, uint8_t *, unsigned int)> callback) {
       mqttClient.setCallback(callback);
     }
     bool connect() {
