@@ -1,5 +1,6 @@
 #ifndef NETWORKS_MQTT_H
 #define NETWORKS_MQTT_H
+#include <stdint.h>
 namespace mqtt {
     void initialize();
     bool connect();
