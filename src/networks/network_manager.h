@@ -10,5 +10,6 @@ namespace network_manager {
     bool is_mqtt_connected();
     bool mqtt_publish_sensor_data(WaterQuality water_quality);
     bool mqtt_publish_status();
+    bool mqtt_publish_completed();
 }
 #endif

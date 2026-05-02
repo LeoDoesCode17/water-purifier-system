@@ -113,4 +113,27 @@ namespace network_manager {
         }
         return ok;
     }
+
+    bool mqtt_publish_completed() {
+        // build json doc
+        JsonDocument doc;
+        char recorded_at[25];
+        if (!get_iso8601_utc(recorded_at, sizeof(recorded_at))) {
+            strcpy(recorded_at, "1970-01-01T00:00:00Z");
+        }
+        doc["mac_address"] = "00:1A:2B:3C:4D:5E";
+        doc["stage"] = "completed";
+        doc["status"] = "completed";
+        doc["recorded_at"] = recorded_at;
+        char buffer[256];
+        size_t len = serializeJson(doc, buffer);
+        bool ok = mqtt::publish(secret::MQTT_CYCLE_PUB_TOPIC, (uint8_t*)buffer, len);
+        if (ok) {
+            Serial.print("[MQTT] Published: ");
+            Serial.println(buffer);
+        } else {
+            Serial.println("[MQTT] Publish failed");
+        }
+        return ok;
+    }
 }
