@@ -10,7 +10,7 @@ typedef struct {
 
 enum tank_type {
     RAW, 
-    SETTLING
+    _SETTLING
 };
 
 enum sensor_type {
