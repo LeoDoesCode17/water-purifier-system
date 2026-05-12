@@ -7,4 +7,34 @@ typedef struct {
     float level;
     float temperature;
 } WaterQuality;
+
+enum tank_type {
+    RAW, 
+    _SETTLING
+};
+
+enum sensor_type {
+    TDS, 
+    TURBIDITY, 
+    PH, 
+    TEMPERATURE, 
+    WATER_VOLUME
+};
+
+enum state_machine {
+    IDLE, 
+    FILLING_TANK, 
+    RAW_SAMPLING, 
+    MEASURE_MORINGA, 
+    DOSING, 
+    MIXING, 
+    SETTLING, 
+    COMPLETED, 
+    FAILED
+};
+
+enum device_status {
+    ONLINE, 
+    OFFLINE
+};
 #endif
