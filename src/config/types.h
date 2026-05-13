@@ -9,8 +9,8 @@ typedef struct {
 } WaterQuality;
 
 enum tank_type {
-    RAW, 
-    _SETTLING
+    TANK_RAW, 
+    TANK_SETTLING
 };
 
 enum sensor_type {
