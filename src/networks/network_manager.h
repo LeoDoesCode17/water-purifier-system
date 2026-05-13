@@ -11,5 +11,6 @@ namespace network_manager {
     bool mqtt_publish_sensor_data(WaterQuality water_quality);
     bool mqtt_publish_status();
     bool mqtt_publish_completed();
+    bool publish_sensor_reading(enum tank_type tank_type, WaterQuality wq);
 }
 #endif

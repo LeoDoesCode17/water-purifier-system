@@ -136,4 +136,44 @@ namespace network_manager {
         }
         return ok;
     }
+
+    bool publish_sensor_reading(enum tank_type tank_type, WaterQuality wq) {
+        JsonDocument doc;
+        char recorded_at[25];
+
+        if (!get_iso8601_utc(recorded_at, sizeof(recorded_at))) {
+            strcpy(recorded_at, "1970-01-01T00:00:00Z");
+        }
+
+        doc["mac_address"] = wifi::get_mac_address();
+        doc["tank_type"] = tank_type == TANK_RAW ? "raw" : "settling"; 
+        doc["recorded_at"] = recorded_at;
+
+        JsonArray readings = doc["readings"].to<JsonArray>();
+
+        auto add_reading = [&](const char* sensor_type, float value) {
+            JsonObject entry = readings.add<JsonObject>();
+            entry["sensor_type"] = sensor_type;
+            entry["value"] = value;  
+        };
+
+        add_reading("tds", wq.ppm);
+        add_reading("turbidity", wq.ntu);
+        add_reading("ph", wq.ph);
+        add_reading("temperature", wq.temperature);
+        add_reading("water_volume", wq.level);
+
+        char buffer[512];
+        size_t len = serializeJson(doc, buffer);
+        
+        bool ok = mqtt::publish(secret::MQTT_SENSOR_READING_PUB_TOPIC, (uint8_t*) buffer, len);
+        if (ok) {
+            Serial.print("[MQTT] Published: ");
+            Serial.println(buffer);
+        } else {
+            Serial.println("[MQTT] Publish failed");
+        }
+        return ok;
+    }
+
 }
