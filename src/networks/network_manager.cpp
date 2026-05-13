@@ -95,7 +95,7 @@ namespace network_manager {
             strcpy(recorded_at, "1970-01-01T00:00:00Z");
         }
         
-        doc["mac_address"] = "00:1A:2B:3C:4D:5E";
+        doc["mac_address"] = wifi::get_mac_address();
         doc["status"] = "online";
         doc["message"] = "ESP Online";
         doc["recorded_at"] = recorded_at;
@@ -121,7 +121,7 @@ namespace network_manager {
         if (!get_iso8601_utc(recorded_at, sizeof(recorded_at))) {
             strcpy(recorded_at, "1970-01-01T00:00:00Z");
         }
-        doc["mac_address"] = "00:1A:2B:3C:4D:5E";
+        doc["mac_address"] = wifi::get_mac_address();
         doc["stage"] = "completed";
         doc["status"] = "completed";
         doc["recorded_at"] = recorded_at;
