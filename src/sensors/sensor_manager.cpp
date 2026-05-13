@@ -2,6 +2,7 @@
 #include "sensors/ultrasonic.h"
 #include "sensors/ds18b20.h"
 #include "sensors/ads1115.h"
+#include "config/constants.h"
 #include "config/pins.h"
 #include <Arduino.h>
 #include <math.h>
@@ -65,17 +66,17 @@ namespace sensor_manager {
     }
 
     float get_ph_value_1() {
-        float voltage_value = ads1115::get_voltage_value_1(1);
-        float voltageAtPH7 = 0.6;   // your calibrated 7.00 pH voltage
-        return 7.0 + (voltageAtPH7 - voltage_value) / 0.05916;
+        float voltage_value = ads1115::get_voltage_value_1(constant::CH_PH);
+        float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
+        return constrain(ph, 0.0f, 14.0f);
         // float ph = 3.5 * voltage_value + ph_calibration;
         // return ph;
     }
 
     float get_ph_value_2() {
-        float voltage_value = ads1115::get_voltage_value_2(1);
-        float voltageAtPH7 = 0.6;   // your calibrated 7.00 pH voltage
-        return 7.0 + (voltageAtPH7 - voltage_value) / 0.05916;
+        float voltage_value = ads1115::get_voltage_value_2(constant::CH_PH);
+        float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
+        return constrain(ph, 0.0f, 14.0f);
         // return voltage_value;
         // float ph = 3.5 * voltage_value + ph_calibration;
         // return ph;
