@@ -3,5 +3,6 @@
 namespace wifi {
     void initialize();
     bool is_connected();
+    const char* get_mac_address();
 }
 #endif
