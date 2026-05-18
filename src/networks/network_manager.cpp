@@ -148,20 +148,25 @@ namespace network_manager {
         doc["mac_address"] = wifi::get_mac_address();
         doc["tank_type"] = tank_type == TANK_RAW ? "raw" : "settling"; 
         doc["recorded_at"] = recorded_at;
+        doc["tds"] = wq.ppm;
+        doc["turbidity"] = wq.ntu;
+        doc["ph"] = wq.ph;
+        doc["temperature"] = wq.temperature;
+        doc["water_volume"] = wq.level;
 
-        JsonArray readings = doc["readings"].to<JsonArray>();
+        // JsonArray readings = doc["readings"].to<JsonArray>();
 
-        auto add_reading = [&](const char* sensor_type, float value) {
-            JsonObject entry = readings.add<JsonObject>();
-            entry["sensor_type"] = sensor_type;
-            entry["value"] = value;  
-        };
+        // auto add_reading = [&](const char* sensor_type, float value) {
+        //     JsonObject entry = readings.add<JsonObject>();
+        //     entry["sensor_type"] = sensor_type;
+        //     entry["value"] = value;  
+        // };
 
-        add_reading("tds", wq.ppm);
-        add_reading("turbidity", wq.ntu);
-        add_reading("ph", wq.ph);
-        add_reading("temperature", wq.temperature);
-        add_reading("water_volume", wq.level);
+        // add_reading("tds", wq.ppm);
+        // add_reading("turbidity", wq.ntu);
+        // add_reading("ph", wq.ph);
+        // add_reading("temperature", wq.temperature);
+        // add_reading("water_volume", wq.level);
 
         char buffer[512];
         size_t len = serializeJson(doc, buffer);
