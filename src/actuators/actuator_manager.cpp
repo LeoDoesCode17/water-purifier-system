@@ -1,13 +1,11 @@
 #include "actuators/actuator_manager.h"
 #include "actuators/servo_valve.h"
-#include "actuators/ball_valve.h"
 #include "actuators/gear_motor.h"
 #include "actuators/pump.h"
 
 namespace actuator_manager {
     void initialize() {
         servo_valve::initialize();
-        ball_valve::initialize();
         gear_motor::initialize();
         pump::initialize();
     }
@@ -20,14 +18,6 @@ namespace actuator_manager {
         servo_valve::close();
     }
 
-    void openBallValve() {
-        ball_valve::open();
-    }
-
-    void closeBallValve() {
-        ball_valve::close();
-    }
-
     void turnOnGearMotor() {
         gear_motor::on();
     }
@@ -36,11 +26,16 @@ namespace actuator_manager {
         gear_motor::off();
     }
 
-    void turnOnPump() {
-        pump::on();
+    void turn_on_pump_1() {
+        pump::on_1();
     }
-
-    void turnOffPump() {
-        pump::off();
+    void turn_on_pump_2() {
+        pump::on_2();
+    }
+    void turn_off_pump_1() {
+        pump::off_1();
+    }
+    void turn_off_pump_2() {
+        pump::off_2();
     }
 }
