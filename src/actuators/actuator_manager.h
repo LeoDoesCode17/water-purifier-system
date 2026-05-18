@@ -4,11 +4,11 @@ namespace actuator_manager {
     void initialize();
     void openServoValve();
     void closeServoValve();
-    void openBallValve();
-    void closeBallValve();
     void turnOnGearMotor();
     void turnOffGearMotor();
-    void turnOnPump();
-    void turnOffPump();
+    void turn_on_pump_1();
+    void turn_on_pump_2();
+    void turn_off_pump_1();
+    void turn_off_pump_2();
 }
 #endif

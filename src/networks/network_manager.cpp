@@ -95,7 +95,7 @@ namespace network_manager {
             strcpy(recorded_at, "1970-01-01T00:00:00Z");
         }
         
-        doc["mac_address"] = "00:1A:2B:3C:4D:5E";
+        doc["mac_address"] = wifi::get_mac_address();
         doc["status"] = "online";
         doc["message"] = "ESP Online";
         doc["recorded_at"] = recorded_at;
@@ -121,7 +121,7 @@ namespace network_manager {
         if (!get_iso8601_utc(recorded_at, sizeof(recorded_at))) {
             strcpy(recorded_at, "1970-01-01T00:00:00Z");
         }
-        doc["mac_address"] = "00:1A:2B:3C:4D:5E";
+        doc["mac_address"] = wifi::get_mac_address();
         doc["stage"] = "completed";
         doc["status"] = "completed";
         doc["recorded_at"] = recorded_at;
@@ -135,5 +135,53 @@ namespace network_manager {
             Serial.println("[MQTT] Publish failed");
         }
         return ok;
+    }
+
+    bool publish_sensor_reading(enum tank_type tank_type, WaterQuality wq) {
+        JsonDocument doc;
+        char recorded_at[25];
+
+        if (!get_iso8601_utc(recorded_at, sizeof(recorded_at))) {
+            strcpy(recorded_at, "1970-01-01T00:00:00Z");
+        }
+
+        doc["mac_address"] = wifi::get_mac_address();
+        doc["tank_type"] = tank_type == TANK_RAW ? "raw" : "settling"; 
+        doc["recorded_at"] = recorded_at;
+        doc["tds"] = wq.ppm;
+        doc["turbidity"] = wq.ntu;
+        doc["ph"] = wq.ph;
+        doc["temperature"] = wq.temperature;
+        doc["water_volume"] = wq.level;
+
+        // JsonArray readings = doc["readings"].to<JsonArray>();
+
+        // auto add_reading = [&](const char* sensor_type, float value) {
+        //     JsonObject entry = readings.add<JsonObject>();
+        //     entry["sensor_type"] = sensor_type;
+        //     entry["value"] = value;  
+        // };
+
+        // add_reading("tds", wq.ppm);
+        // add_reading("turbidity", wq.ntu);
+        // add_reading("ph", wq.ph);
+        // add_reading("temperature", wq.temperature);
+        // add_reading("water_volume", wq.level);
+
+        char buffer[512];
+        size_t len = serializeJson(doc, buffer);
+        
+        bool ok = mqtt::publish(secret::MQTT_SENSOR_READING_PUB_TOPIC, (uint8_t*) buffer, len);
+        if (ok) {
+            Serial.print("[MQTT] Published: ");
+            Serial.println(buffer);
+        } else {
+            Serial.println("[MQTT] Publish failed");
+        }
+        return ok;
+    }
+
+    void mqtt_set_callback(mqtt_callback callback) {
+        mqtt::set_callback(callback);
     }
 }

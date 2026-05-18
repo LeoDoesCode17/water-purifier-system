@@ -2,6 +2,7 @@
 #include "sensors/ultrasonic.h"
 #include "sensors/ds18b20.h"
 #include "sensors/ads1115.h"
+#include "config/constants.h"
 #include "config/pins.h"
 #include <Arduino.h>
 #include <math.h>
@@ -65,51 +66,65 @@ namespace sensor_manager {
     }
 
     float get_ph_value_1() {
-        float voltage_value = ads1115::get_voltage_value_1(1);
-        float voltageAtPH7 = 0.6;   // your calibrated 7.00 pH voltage
-        return 7.0 + (voltageAtPH7 - voltage_value) / 0.05916;
+        float voltage_value = ads1115::get_voltage_value_1(constant::CH_PH);
+        float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
+        return constrain(ph, 0.0f, 14.0f);
         // float ph = 3.5 * voltage_value + ph_calibration;
         // return ph;
     }
 
     float get_ph_value_2() {
-        float voltage_value = ads1115::get_voltage_value_2(1);
-        float voltageAtPH7 = 0.6;   // your calibrated 7.00 pH voltage
-        return 7.0 + (voltageAtPH7 - voltage_value) / 0.05916;
+        float voltage_value = ads1115::get_voltage_value_2(constant::CH_PH);
+        float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
+        return constrain(ph, 0.0f, 14.0f);
         // return voltage_value;
         // float ph = 3.5 * voltage_value + ph_calibration;
         // return ph;
     }
 
     float get_turbidity_ntu_value_1() {
-        float voltage_value = ads1115::get_voltage_value_1(0);
+        float voltage_value = ads1115::get_voltage_value_1(constant::CH_TURBIDITY);
         // float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
         // return rough_turbidity_ntu;
         return voltage_value;
     }
 
     float get_turbidity_ntu_value_2() {
-        float voltage_value = ads1115::get_voltage_value_2(0);
+        float voltage_value = ads1115::get_voltage_value_2(constant::CH_TURBIDITY);
         // float rough_turbidity_ntu = -1120.4*pow(voltage_value, 2) + 5742.3*voltage_value - 4352.9;
         // return rough_turbidity_ntu;
         return voltage_value;
     }
 
     float get_tds_ppm_value_1() {
-        float voltage_value = ads1115::get_voltage_value_1(2);
-        float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
-        float water_temperature = ds18b20::get_temperature_c_1();
-        float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
-        float rough_ppm_value = electrical_conductivity_25 * 0.5;
-        return rough_ppm_value; 
+        float voltage_value = ads1115::get_voltage_value_1(constant::CH_TDS);
+        float compensation_coeff = 1.0f + 0.02f*(get_temperature_c_1() - 25.0f);
+        float Vc = voltage_value / compensation_coeff;
+        float tds = (133.42f * powf(Vc, 3)
+                - 255.86f * powf(Vc, 2)
+                + 857.39f * Vc) * 0.5f;
+        return constrain(tds, 0.0f, 3000.0f);
+
+        // float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
+        // float water_temperature = ds18b20::get_temperature_c_1();
+        // float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
+        // float rough_ppm_value = electrical_conductivity_25 * 0.5;
+        // return rough_ppm_value; 
     }
 
     float get_tds_ppm_value_2() {
-        float voltage_value = ads1115::get_voltage_value_2(2);
-        float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
-        float water_temperature = ds18b20::get_temperature_c_2();
-        float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
-        float rough_ppm_value = electrical_conductivity_25 * 0.5;
-        return rough_ppm_value;
+        float voltage_value = ads1115::get_voltage_value_2(constant::CH_TDS);
+        float compensation_coeff = 1.0f + 0.02f*(get_temperature_c_2() - 25.0f);
+        float Vc = voltage_value / compensation_coeff;
+        float tds = (133.42f * powf(Vc, 3)
+                - 255.86f * powf(Vc, 2)
+                + 857.39f * Vc) * 0.5f;
+        return constrain(tds, 0.0f, 3000.0f);
+        
+        // float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
+        // float water_temperature = ds18b20::get_temperature_c_2();
+        // float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
+        // float rough_ppm_value = electrical_conductivity_25 * 0.5;
+        // return rough_ppm_value;
     }
 }

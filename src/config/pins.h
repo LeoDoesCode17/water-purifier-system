@@ -4,8 +4,8 @@ namespace pins {
     constexpr int SDA_PIN = 8;
     constexpr int SCL_PIN = 9;
     constexpr int SERVO_VALVE_PIN = 4;
-    constexpr int BALL_VALVE_PIN = 5;
-    constexpr int PUMP_PIN = 6;
+    constexpr int PUMP_1_PIN = 5;
+    constexpr int PUMP_2_PIN = 6;
     constexpr int GEAR_MOTOR_PIN = 7;
     constexpr int TRIG_1_PIN = 10;
     constexpr int ECHO_1_PIN = 11;

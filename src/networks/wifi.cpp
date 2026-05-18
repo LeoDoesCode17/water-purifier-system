@@ -1,7 +1,7 @@
 #include "networks/wifi.h"
 #include <WiFi.h>
 #include "config/secrets.h"
-
+static char mac_buf[18];
 namespace wifi {
     void initialize() {
         Serial.print("[WIFI] Connecting to ");
@@ -22,5 +22,10 @@ namespace wifi {
 
     bool is_connected() {
         return WiFi.status() == WL_CONNECTED;
+    }
+
+    const char* get_mac_address() {
+        WiFi.macAddress().toCharArray(mac_buf, sizeof(mac_buf));
+        return mac_buf;
     }
 }

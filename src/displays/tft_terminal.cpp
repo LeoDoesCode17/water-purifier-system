@@ -44,9 +44,9 @@ static void _newline() {
 #define DIVIDER_COLOR   0x4208  // mid grey
 
 static const char* ROW_LABELS[] = {
-    "Temperature",
-    "Water Level",
-    "NTU",
+    "Temperature (C)",
+    "Water Level (cm)",
+    "NTU (Volts)",
     "PPM",
     "PH"
 };

@@ -4,14 +4,19 @@
 
 namespace pump {
     void initialize() {
-        pinMode(pins::PUMP_PIN, OUTPUT);
+        pinMode(pins::PUMP_1_PIN, OUTPUT);
+        pinMode(pins::PUMP_2_PIN, OUTPUT);
     }
-
-    void on() {
-        digitalWrite(pins::PUMP_PIN, HIGH);
+    void on_1() {
+        digitalWrite(pins::PUMP_1_PIN, HIGH);
     }
-
-    void off() {
-        digitalWrite(pins::PUMP_PIN, LOW);
+    void off_1() {
+        digitalWrite(pins::PUMP_1_PIN, LOW);
+    }
+    void on_2() {
+        digitalWrite(pins::PUMP_2_PIN, HIGH);
+    }
+    void off_2() {
+        digitalWrite(pins::PUMP_2_PIN, LOW);
     }
 }
