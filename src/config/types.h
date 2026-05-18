@@ -1,5 +1,7 @@
 #ifndef CONFIG_TYPES_H
 #define CONFIG_TYPES_H
+#include <stdint.h>
+
 typedef struct {
     float ntu;
     float ph;
@@ -7,6 +9,8 @@ typedef struct {
     float level;
     float temperature;
 } WaterQuality;
+
+using mqtt_callback = void(*)(char*, uint8_t*, unsigned int);
 
 enum tank_type {
     TANK_RAW, 
