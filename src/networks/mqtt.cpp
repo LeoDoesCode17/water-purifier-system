@@ -3,6 +3,7 @@
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <Arduino.h>
+#include "config/types.h"
 
 static WiFiClient espClient;
 static PubSubClient mqttClient(espClient);
@@ -25,7 +26,7 @@ static void callback(char* topic, byte* payload, unsigned int length) {
 namespace mqtt {
     void initialize() {
       mqttClient.setServer(secret::MQTT_BROKER, secret::MQTT_PORT);
-      mqttClient.setCallback(callback);
+    //   mqttClient.setCallback(callback);
     }
 
     bool connect() {
@@ -67,6 +68,10 @@ namespace mqtt {
 
     bool publish(const char *topic, const uint8_t *payload, unsigned int plength) {
         return mqttClient.publish(topic, payload, plength);
+    }
+
+    void set_callback(mqtt_callback callback) {
+        mqttClient.setCallback(callback);
     }
 
 

@@ -181,4 +181,7 @@ namespace network_manager {
         return ok;
     }
 
+    void mqtt_set_callback(mqtt_callback callback) {
+        mqtt::set_callback(callback);
+    }
 }
