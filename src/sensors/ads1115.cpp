@@ -71,9 +71,4 @@ namespace ads1115 {
         // return ads_2.computeVolts(raw);
         return read_voltage_1(index);
     }
-    
-    // You can also add a helper for raw values if needed
-    int16_t get_raw_value_1(int index) {
-        return ads_1.readADC_SingleEnded(index);
-    }
 }
