@@ -69,6 +69,6 @@ namespace ads1115 {
         if (index < 0 || index > 3) return 0.0f;
         // int16_t raw = ads_2.readADC_SingleEnded(index);
         // return ads_2.computeVolts(raw);
-        return read_voltage_1(index);
+        return read_voltage_2(index);
     }
 }
