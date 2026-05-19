@@ -67,19 +67,22 @@ namespace sensor_manager {
 
     float get_ph_value_1() {
         float voltage_value = ads1115::get_voltage_value_1(constant::CH_PH);
-        float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
-        return constrain(ph, 0.0f, 14.0f);
-        // float ph = 3.5 * voltage_value + ph_calibration;
-        // return ph;
+        // Test voltage value
+        return voltage_value;
+
+        // Get real PH value
+        // float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
+        // return constrain(ph, 0.0f, 14.0f);
     }
 
     float get_ph_value_2() {
         float voltage_value = ads1115::get_voltage_value_2(constant::CH_PH);
-        float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
-        return constrain(ph, 0.0f, 14.0f);
-        // return voltage_value;
-        // float ph = 3.5 * voltage_value + ph_calibration;
-        // return ph;
+        // Test voltage value
+        return voltage_value;
+
+        // Get real PH value
+        // float ph = 7.0f - ((voltage_value - constant::PH_NEUTRAL_VOLTAGE) / constant::PH_SLOPE);
+        // return constrain(ph, 0.0f, 14.0f);
     }
 
     float get_turbidity_ntu_value_1() {
