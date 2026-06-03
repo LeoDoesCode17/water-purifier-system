@@ -4,7 +4,7 @@
 namespace network_manager {
     void initialize();
     bool is_wifi_connected();
-    void reconnect_wifi();
+    void wifi_reconnect();
     bool mqtt_connect();
     void mqtt_loop();
     bool is_mqtt_connected();
@@ -13,5 +13,6 @@ namespace network_manager {
     bool mqtt_publish_completed();
     bool publish_sensor_reading(enum tank_type tank_type, WaterQuality wq);
     void mqtt_set_callback(mqtt_callback callback);
+    void mqtt_reconnect();
 }
 #endif
