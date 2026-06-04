@@ -17,7 +17,7 @@ namespace display_manager
 
     void initialize_production()
     {
-        // initialize tft for production
+        tft_ili9488::initialize_production();
     }
 
     void ili9488_print(const String &text)
