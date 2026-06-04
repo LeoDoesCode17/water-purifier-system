@@ -74,8 +74,8 @@ static void _draw_table_scaffold() {
     _tft.setTextSize(1);
     _tft.setTextColor(HEADER_FG, HEADER_BG);
     _tft.drawString("Data",     TABLE_X0 + TABLE_PAD_X, TABLE_HEADER_Y + TABLE_PAD_Y);
-    _tft.drawString("Sensor 1", TABLE_X1 + TABLE_PAD_X, TABLE_HEADER_Y + TABLE_PAD_Y);
-    _tft.drawString("Sensor 2", TABLE_X2 + TABLE_PAD_X, TABLE_HEADER_Y + TABLE_PAD_Y);
+    _tft.drawString("MIXING TANK", TABLE_X1 + TABLE_PAD_X, TABLE_HEADER_Y + TABLE_PAD_Y);
+    _tft.drawString("SETTLING TANK", TABLE_X2 + TABLE_PAD_X, TABLE_HEADER_Y + TABLE_PAD_Y);
 
     // ── Label column + empty value cells ─────────────────────────────────────
     for (int i = 0; i < ROW_COUNT; i++) {

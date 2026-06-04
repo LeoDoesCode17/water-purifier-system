@@ -3,17 +3,25 @@
 #include "config/pins.h"
 
 static Servo servoValve;
-namespace servo_valve {
-    void initialize() {
-        servoValve.attach(pins::SERVO_VALVE_PIN);
-        servoValve.write(0);
+static constexpr int SERVO_OPEN_ANGLE = 180; // open 100%
+static constexpr int SERVO_CLOSE_ANGLE = 90; // close 100%
+
+namespace servo_valve
+{
+    void initialize()
+    {
+        servoValve.attach(pins::SERVO_VALVE_PIN, 500, 2500);
+        servoValve.write(SERVO_CLOSE_ANGLE);
+        delay(500);
     }
 
-    void open() {
-        servoValve.write(180);
+    void open()
+    {
+        servoValve.write(SERVO_OPEN_ANGLE);
     }
 
-    void close() {
-        servoValve.write(0);
+    void close()
+    {
+        servoValve.write(SERVO_CLOSE_ANGLE);
     }
 }
