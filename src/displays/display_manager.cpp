@@ -40,17 +40,15 @@ namespace display_manager
         tft_ili9488::print(value);
     }
 
-    void ili9488_print(float value, uint8_t decimals = 2)
+    void ili9488_print(float value, uint8_t decimals)
     {
         tft_ili9488::print(value, decimals);
     }
-
 
     void ili9488_println()
     {
         tft_ili9488::println();
     }
-
 
     void ili9488_println(const String &text)
     {
@@ -72,9 +70,62 @@ namespace display_manager
         tft_ili9488::println(value);
     }
 
-    void ili9488_println(float value, uint8_t decimals = 2)
+    void ili9488_println(float value, uint8_t decimals)
     {
         tft_ili9488::println(value, decimals);
+    }
+
+    void _draw_labels()
+    {
+        tft_ili9488::_draw_labels();
+    }
+    void _update_values(WaterQuality wq)
+    {
+        tft_ili9488::_update_values(wq);
+    }
+
+    void state_idle_ui()
+    {
+        tft_ili9488::state_idle_ui();
+    }
+
+    void state_filling_mixing_tank_ui(float water_level_cm)
+    {
+        tft_ili9488::state_filling_mixing_tank_ui(water_level_cm);
+    }
+
+    void state_raw_sampling_ui(const WaterQuality &wq)
+    {
+        tft_ili9488::state_raw_sampling_ui(wq);
+    }
+
+    void state_ai_measure_ui(const float &moringa_dose_gram, const float &mixing_time_seconds)
+    {
+        tft_ili9488::state_ai_measure_ui(moringa_dose_gram, mixing_time_seconds);
+    }
+
+    void state_dosing_ui(const float &dosing_time_elapsed_s,
+                         const float &dosing_time_total_s)
+    {
+        tft_ili9488::state_dosing_ui(dosing_time_elapsed_s, dosing_time_total_s);
+    }
+
+    void state_mixing_ui(const float &mixing_time_elapsed_s,
+                         const float &mixing_time_total_s)
+    {
+        tft_ili9488::state_mixing_ui(mixing_time_elapsed_s, mixing_time_total_s);
+    }
+
+    void state_filling_settling_tank_ui(float water_level_cm)
+    {
+        tft_ili9488::state_filling_settling_tank_ui(water_level_cm);
+    }
+
+    void state_settling_ui(const WaterQuality &wq,
+                           float elapsed_s,
+                           float total_s)
+    {
+        tft_ili9488::state_settling_ui(wq, elapsed_s, total_s);
     }
 
 }
