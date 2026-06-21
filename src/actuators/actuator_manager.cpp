@@ -38,4 +38,7 @@ namespace actuator_manager {
     void turn_off_pump_2() {
         pump::off_2();
     }
+    float get_opening_servo_time_by_dose_ms(float moringa_dose) {
+        return 0.0;
+    }
 }
