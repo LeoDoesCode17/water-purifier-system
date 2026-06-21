@@ -10,5 +10,6 @@ namespace actuator_manager {
     void turn_on_pump_2();
     void turn_off_pump_1();
     void turn_off_pump_2();
+    float get_opening_servo_time_by_dose_ms(float moringa_dose);
 }
 #endif
