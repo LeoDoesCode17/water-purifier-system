@@ -8,6 +8,7 @@ typedef struct {
     float ppm;
     float level;
     float temperature;
+    float volume_liter;
 } WaterQuality;
 
 using mqtt_callback = void(*)(char*, uint8_t*, unsigned int);
@@ -27,12 +28,13 @@ enum sensor_type {
 
 enum state_machine {
     IDLE, 
-    FILLING_TANK, 
+    FILLING_MIXING_TANK, 
     RAW_SAMPLING, 
     MEASURE_MORINGA, 
     DOSING, 
     MIXING, 
     SETTLING, 
+    FILLING_SETTLING_TANK,
     COMPLETED, 
     FAILED
 };

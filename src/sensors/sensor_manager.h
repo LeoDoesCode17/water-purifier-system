@@ -13,5 +13,6 @@ namespace sensor_manager {
     float get_tds_ppm_value_1();
     float get_tds_ppm_value_2();
     void update_all();
+    float get_water_volume_liter(float water_level_cm);
 }
 #endif

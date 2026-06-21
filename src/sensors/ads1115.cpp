@@ -43,6 +43,7 @@ namespace ads1115 {
             Serial.println("Error: ADS1115 Module 1 (0x48) not found.");
             success = false;
         } else {
+            Serial.println("Success: ADS115 Module 1 found");
             ads_1.setGain(GAIN_ONE);
         }
 
@@ -51,6 +52,7 @@ namespace ads1115 {
             Serial.println("Error: ADS1115 Module 2 (0x49) not found.");
             success = false;
         } else {
+            Serial.println("Success: ADS115 Module 2 found");
             ads_2.setGain(GAIN_ONE);
         }
 

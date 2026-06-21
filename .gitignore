@@ -6,3 +6,5 @@
 lib/
 src/config/secrets.h
 test/
+_lib
+_src
