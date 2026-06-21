@@ -1,7 +1,12 @@
 #ifndef AI_AI_MANAGER_H
 #define AI_AI_MANAGER_H
-namespace ai_manager {
+
+#include "config/types.h"
+namespace ai_manager
+{
     void initialize();
-    void predict(float *moringa_dose, float *mixing_time);
+    void predict(const WaterQuality &wq);
+    float get_moringa_dose_gram();
+    float get_mixing_time_second();
 }
 #endif
