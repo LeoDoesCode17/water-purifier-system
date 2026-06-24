@@ -12,8 +12,6 @@
 
 typedef unsigned long ul;
 ul lastReconnectAttempt = 0;
-
-// TIMING
 ul last_publish_settling_data = 0;
 ul last_publish_status = 0;
 ul last_main_loop = 0;
@@ -497,8 +495,15 @@ void loop()
     // STATE MACHINE OTHER
     else
     {
-      // TODO: DISPLAY OTHER UI
-      // display_manager::ili9488_println("[STATE MACHINE] Undefine value of state machine, back to idle ");
+      display_manager::state_failed_ui("Sensor read timeout"); // pass your reason
+
+      actuator_manager::closeServoValve();
+      actuator_manager::turn_off_pump_1();
+      actuator_manager::turn_off_pump_2();
+      actuator_manager::turnOffGearMotor();
+
+      delay(5000); // longer hold than COMPLETED — operator needs time to note the error
+
       state_machine = IDLE;
     }
   }
