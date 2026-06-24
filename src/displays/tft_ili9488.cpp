@@ -1207,6 +1207,56 @@ namespace tft_ili9488
         }
     }
 
+    void state_completed_ui()
+    {
+        clear_body();
+        update_footer_status("Process Completed");
+
+        // ── State badge ───────────────────────────────────────────────────────
+        int badge_w = 185, badge_h = 32;
+        int badge_x = (production::SCREEN_W - badge_w) / 2;
+        int badge_y = production::BODY_Y + 18;
+        _tft.fillRoundRect(badge_x, badge_y, badge_w, badge_h, 8, 0x07E0); // green
+        _tft.setTextColor(TFT_BLACK, 0x07E0);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("COMPLETED", production::SCREEN_W / 2, badge_y + badge_h / 2, 2);
+
+        // ── Large checkmark icon (drawn with primitives) ───────────────────────
+        // Center point of the check
+        int cx = production::SCREEN_W / 2;
+        int cy = production::BODY_Y + 100;
+        int r = 30;
+
+        // Outer circle
+        _tft.drawCircle(cx, cy, r, 0x07E0);
+        _tft.drawCircle(cx, cy, r - 1, 0x07E0); // double for thickness
+
+        // Checkmark: short left leg + long right leg
+        // Short leg: (cx-16, cy) → (cx-4, cy+12)
+        // Long leg:  (cx-4,  cy+12) → (cx+16, cy-12)
+        for (int t = 0; t <= 1; t++) // draw twice for 2px thickness
+        {
+            _tft.drawLine(cx - 16, cy + t, cx - 4, cy + 12 + t, 0x07E0);
+            _tft.drawLine(cx - 4, cy + 12 + t, cx + 16, cy - 12 + t, 0x07E0);
+        }
+
+        // ── Main message ──────────────────────────────────────────────────────
+        _tft.setTextColor(TFT_WHITE, production::COL_BG);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("Purification Complete!", production::SCREEN_W / 2, production::BODY_Y + 148, 2);
+
+        // ── Sub-messages ──────────────────────────────────────────────────────
+        _tft.setTextColor(production::COL_TEXT_MUT, production::COL_BG);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("All actuators turned off", production::SCREEN_W / 2, production::BODY_Y + 172, 1);
+        _tft.drawString("Result published via MQTT", production::SCREEN_W / 2, production::BODY_Y + 188, 1);
+
+        // ── "Returning to IDLE" note ──────────────────────────────────────────
+        _tft.setTextColor(production::COL_TEXT_FAINT, production::COL_BG);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("Returning to IDLE...", production::SCREEN_W / 2, production::BODY_Y + 212, 1);
+    }
+    
     // ── Helpers ───────────────────────────────────────────────────────────
     void clear_body()
     {

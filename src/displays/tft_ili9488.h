@@ -58,7 +58,8 @@ namespace tft_ili9488
     void state_settling_ui(const WaterQuality &wq,
                            float elapsed_s,
                            float total_s);
-
+    void state_completed_ui();
+    
     // ── Helpers ───────────────────────────────────────────────────────────
     void clear_body();
     void update_footer_status(const char *status);
