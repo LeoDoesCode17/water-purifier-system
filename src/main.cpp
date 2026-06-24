@@ -469,7 +469,7 @@ void loop()
     // STATE MACHINE COMPLETED
     else if (state_machine == COMPLETED)
     {
-      // TODO: DISPLAY COMPLETED UI
+      display_manager::state_completed_ui();
       network_manager::mqtt_publish_completed();
       // display_manager::ili9488_println("[COMPLETED] Process is completed, go back to IDLE");
       // display_manager::ili9488_println("[COMPLETED] Turn off all actuators");
@@ -477,6 +477,8 @@ void loop()
       actuator_manager::turn_off_pump_1();
       actuator_manager::turn_off_pump_2();
       actuator_manager::turnOffGearMotor();
+
+      delay(3000);
       state_machine = IDLE;
     }
 
