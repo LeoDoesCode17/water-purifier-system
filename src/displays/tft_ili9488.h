@@ -59,7 +59,8 @@ namespace tft_ili9488
                            float elapsed_s,
                            float total_s);
     void state_completed_ui();
-    
+    void state_failed_ui(const char *reason = "Unknown error");
+
     // ── Helpers ───────────────────────────────────────────────────────────
     void clear_body();
     void update_footer_status(const char *status);

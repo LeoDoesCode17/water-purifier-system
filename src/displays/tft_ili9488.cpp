@@ -1256,7 +1256,60 @@ namespace tft_ili9488
         _tft.setTextDatum(MC_DATUM);
         _tft.drawString("Returning to IDLE...", production::SCREEN_W / 2, production::BODY_Y + 212, 1);
     }
-    
+
+    void state_failed_ui(const char *reason = "Unknown error")
+    {
+        clear_body();
+        update_footer_status("Process Failed");
+
+        // ── State badge ───────────────────────────────────────────────────────
+        int badge_w = 150, badge_h = 32;
+        int badge_x = (production::SCREEN_W - badge_w) / 2;
+        int badge_y = production::BODY_Y + 18;
+        _tft.fillRoundRect(badge_x, badge_y, badge_w, badge_h, 8, 0xF800); // red
+        _tft.setTextColor(TFT_WHITE, 0xF800);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("FAILED", production::SCREEN_W / 2, badge_y + badge_h / 2, 2);
+
+        // ── X icon (drawn with primitives) ────────────────────────────────────
+        int cx = production::SCREEN_W / 2;
+        int cy = production::BODY_Y + 100;
+        int r = 30;
+        int o = 16; // offset for X arms
+
+        // Outer circle
+        _tft.drawCircle(cx, cy, r, 0xF800);
+        _tft.drawCircle(cx, cy, r - 1, 0xF800);
+
+        // X mark: two diagonal lines, drawn twice for 2px thickness
+        for (int t = 0; t <= 1; t++)
+        {
+            _tft.drawLine(cx - o, cy - o + t, cx + o, cy + o + t, 0xF800); // top-left → bottom-right
+            _tft.drawLine(cx + o, cy - o + t, cx - o, cy + o + t, 0xF800); // top-right → bottom-left
+        }
+
+        // ── Main message ──────────────────────────────────────────────────────
+        _tft.setTextColor(TFT_WHITE, production::COL_BG);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("Process Failed!", production::SCREEN_W / 2, production::BODY_Y + 148, 2);
+
+        // ── Reason string ─────────────────────────────────────────────────────
+        _tft.setTextColor(0xFD20, production::COL_BG); // orange — stands out without being more alarming
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString(reason, production::SCREEN_W / 2, production::BODY_Y + 170, 1);
+
+        // ── Sub-messages ──────────────────────────────────────────────────────
+        _tft.setTextColor(production::COL_TEXT_MUT, production::COL_BG);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("All actuators turned off", production::SCREEN_W / 2, production::BODY_Y + 190, 1);
+        _tft.drawString("Error reported via MQTT", production::SCREEN_W / 2, production::BODY_Y + 206, 1);
+
+        // ── Return note ───────────────────────────────────────────────────────
+        _tft.setTextColor(production::COL_TEXT_FAINT, production::COL_BG);
+        _tft.setTextDatum(MC_DATUM);
+        _tft.drawString("Returning to IDLE...", production::SCREEN_W / 2, production::BODY_Y + 218, 1);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────
     void clear_body()
     {
