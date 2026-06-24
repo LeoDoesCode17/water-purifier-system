@@ -1257,7 +1257,7 @@ namespace tft_ili9488
         _tft.drawString("Returning to IDLE...", production::SCREEN_W / 2, production::BODY_Y + 212, 1);
     }
 
-    void state_failed_ui(const char *reason = "Unknown error")
+    void state_failed_ui(const char *reason)
     {
         clear_body();
         update_footer_status("Process Failed");
