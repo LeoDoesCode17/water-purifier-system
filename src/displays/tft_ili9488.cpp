@@ -451,7 +451,7 @@ namespace tft_ili9488
     {
     }
 
-    void draw_header(const char *title = "Smart Water Purifier")
+    void draw_header(const char *title)
     {
         // Background bar
         _tft.fillRect(0, 0, production::SCREEN_W, production::HEADER_H, production::COL_HEADER_BG);
@@ -472,7 +472,7 @@ namespace tft_ili9488
         // Bottom divider line
         _tft.drawFastHLine(0, production::HEADER_H - 1, production::SCREEN_W, production::COL_ACCENT);
     }
-    void draw_footer(const char *status = "READY")
+    void draw_footer(const char *status)
     {
         int y = production::SCREEN_H - production::FOOTER_H;
 
