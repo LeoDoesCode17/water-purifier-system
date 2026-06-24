@@ -39,6 +39,6 @@ namespace display_manager
                            float elapsed_s,
                            float total_s);
     void state_completed_ui();
-    void state_failed_ui();
+    void state_failed_ui(const char *reason = "Unknown error");
 }
 #endif

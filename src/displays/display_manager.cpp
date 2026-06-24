@@ -128,8 +128,13 @@ namespace display_manager
         tft_ili9488::state_settling_ui(wq, elapsed_s, total_s);
     }
 
-    void state_completed_ui() {
+    void state_completed_ui()
+    {
         tft_ili9488::state_completed_ui();
     }
 
+    void state_failed_ui(const char *reason)
+    {
+        tft_ili9488::state_failed_ui(reason);
+    }
 }
