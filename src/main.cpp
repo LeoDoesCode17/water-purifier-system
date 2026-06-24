@@ -14,14 +14,9 @@ typedef unsigned long ul;
 ul lastReconnectAttempt = 0;
 
 // TIMING
-const ul SECOND_TO_MILISECONDS = 1000;
-const ul PUBLISH_SETTLING_INTERVAL_MS = 1000;
 ul last_publish_settling_data = 0;
-const ul PUBLISH_STATUS_INTERVAL_MS = 5000;
 ul last_publish_status = 0;
-const ul MAIN_LOOP_INTERVAL_MS = 100;
 ul last_main_loop = 0;
-const ul SETTLING_TIME = 3600000;
 ul last_settling_time = 0;
 ul last_dosing_moringa = 0;
 ul last_mixing_moringa = 0;
@@ -191,7 +186,7 @@ void setup()
 void loop()
 {
   ul current_millis = millis();
-  if (current_millis - last_main_loop >= MAIN_LOOP_INTERVAL_MS)
+  if (current_millis - last_main_loop >= constant::MAIN_LOOP_INTERVAL_MS)
   {
     last_main_loop = millis();
 
@@ -202,7 +197,7 @@ void loop()
     if (state_machine == IDLE)
     {
       display_manager::state_idle_ui();
-      if (millis() - last_publish_status >= PUBLISH_STATUS_INTERVAL_MS)
+      if (millis() - last_publish_status >= constant::PUBLISH_STATUS_INTERVAL_MS)
       {
         last_publish_status = millis();
         network_manager::mqtt_publish_status();
@@ -423,10 +418,10 @@ void loop()
     else if (state_machine == SETTLING)
     {
       float elapsed_s = (millis() - current_time) / 1000.0f;
-      float total_s = SETTLING_TIME / 1000.0f;
+      float total_s = constant::SETTLING_TIME / 1000.0f;
 
       // Publish sensor data at configured interval
-      if (millis() - last_publish_settling_data >= PUBLISH_SETTLING_INTERVAL_MS)
+      if (millis() - last_publish_settling_data >= constant::PUBLISH_SETTLING_INTERVAL_MS)
       {
         last_publish_settling_data = millis();
         sensor_manager::update_all();
@@ -465,7 +460,7 @@ void loop()
         }
       }
 
-      if (millis() - current_time >= SETTLING_TIME)
+      if (millis() - current_time >= constant::SETTLING_TIME)
       {
         state_machine = COMPLETED;
       }

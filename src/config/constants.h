@@ -1,6 +1,7 @@
 #ifndef CONFIG_CONSTANTS_H
 #define CONFIG_CONSTANTS_H
 #include <stdint.h>
+typedef unsigned long ul;
 namespace constant
 {
     constexpr long BAUD_RATE = 115200;
@@ -13,8 +14,8 @@ namespace constant
     constexpr float ADS_BIT_MV = 0.125f;
     constexpr float MAX_MIXING_TANK_LEVEL = 7.0;
     constexpr float MAX_SETTLING_TANK_LEVEL = 9.0;
-    constexpr unsigned long SENSOR_SAMPLE_COUNT = 200;
-    constexpr unsigned long MQTT_RECONNECT_INTERVAL = 5000;
+    constexpr ul SENSOR_SAMPLE_COUNT = 200;
+    constexpr ul MQTT_RECONNECT_INTERVAL = 5000;
     constexpr float PH_SLOPE = -8.113910;
     constexpr float PH_INTERCEPT = 32.498114 + 0.6;
     constexpr float VOLTAGE_DIVIDER_R1 = 10000.0;
@@ -31,7 +32,13 @@ namespace constant
     constexpr float WATER_MASS_GR_INTERCEPT = 9818.1436;
     constexpr float WATER_DENSITY_GR_PER_ML = 1;
     constexpr float LITER_TO_ML = 1000.0;
-    constexpr unsigned long N_SAMPLES = 10;
-    constexpr unsigned long SAMPLE_DELAY_MS = 40; // ~25Hz, gives ADS1115 time to settle
+    constexpr ul N_SAMPLES = 10;
+    constexpr ul SAMPLE_DELAY_MS = 40; // ~25Hz, gives ADS1115 time to settle
+
+    const ul SECOND_TO_MILISECONDS = 1000;
+    const ul PUBLISH_SETTLING_INTERVAL_MS = 1000;
+    const ul PUBLISH_STATUS_INTERVAL_MS = 5000;
+    const ul SETTLING_TIME = 3600000;
+    const ul MAIN_LOOP_INTERVAL_MS = 10;
 }
 #endif
