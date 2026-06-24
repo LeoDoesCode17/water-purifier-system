@@ -40,5 +40,6 @@ namespace constant
     const ul PUBLISH_STATUS_INTERVAL_MS = 5000;
     const ul SETTLING_TIME = 3600000;
     const ul MAIN_LOOP_INTERVAL_MS = 10;
+    const ul DISPLAY_DURATION_MS = 5000;
 }
 #endif
