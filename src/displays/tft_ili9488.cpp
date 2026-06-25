@@ -559,7 +559,7 @@ namespace tft_ili9488
         int badge_w = 210, badge_h = 32;
         int badge_x = (production::SCREEN_W - badge_w) / 2;
         int badge_y = production::BODY_Y + 14;
-        _tft.fillRoundRect(badge_x, badge_y, badge_w, badge_h, 8, 0xFD20); // orange
+        _tft.fillRoundRect(badge_x, badge_y, badge_w, badge_h, 8, 0xFD20);
         _tft.setTextColor(TFT_WHITE, 0xFD20);
         _tft.setTextDatum(MC_DATUM);
         _tft.drawString("FILLING MIXING TANK", production::SCREEN_W / 2, badge_y + badge_h / 2, 2);
@@ -569,69 +569,70 @@ namespace tft_ili9488
         int card_w = production::SCREEN_W - 40, card_h = 148;
         _tft.drawRoundRect(card_x, card_y, card_w, card_h, 8, production::COL_TEXT_FAINT);
 
-        // Card header: tank label (left) + pump status (right)
         _tft.setTextColor(production::COL_TEXT_MUT, production::COL_BG);
         _tft.setTextDatum(TL_DATUM);
         _tft.drawString("MIXING TANK", card_x + 12, card_y + 10, 1);
 
-        // Pump 1 indicator — right side of card
-        uint16_t pump_color = 0x07E0; // green = ON
+        uint16_t pump_color = 0x07E0;
         _tft.fillCircle(card_x + card_w - 70, card_y + 15, 5, pump_color);
         _tft.setTextColor(pump_color, production::COL_BG);
         _tft.setTextDatum(ML_DATUM);
         _tft.drawString("Pump 1  ON", card_x + card_w - 60, card_y + 15, 1);
 
-        // Divider line below card header
         _tft.drawFastHLine(card_x + 1, card_y + 28, card_w - 2, production::COL_FOOTER_BG);
 
-        // ── Water level progress bar ──────────────────────────────────────────
+        // ── Water level computation ───────────────────────────────────────────
+        // Sensor mounted at top: distance DECREASES as water rises.
+        // Usable range: MAX (empty) → MIN (full)
+        float dist = water_level_cm < constant::MIN_MIXING_TANK_LEVEL
+                         ? constant::MIN_MIXING_TANK_LEVEL
+                         : water_level_cm;
+        dist = dist > constant::MAX_MIXING_TANK_LEVEL
+                   ? constant::MAX_MIXING_TANK_LEVEL
+                   : dist;
+
+        float usable_cm = constant::MAX_MIXING_TANK_LEVEL - constant::MIN_MIXING_TANK_LEVEL; // 23 cm
+        float filled_cm = constant::MAX_MIXING_TANK_LEVEL - dist;                            // 0 → 23 cm
+        float ratio = filled_cm / usable_cm;                                                 // 0.0 → 1.0
+
+        // ── Progress bar ──────────────────────────────────────────────────────
         int bar_x = card_x + 40;
         int bar_y = card_y + 42;
         int bar_w = card_w - 80;
         int bar_h = 22;
-
-        // Clamp and compute fill ratio
-        float level = water_level_cm < 0 ? 0 : water_level_cm;
-        level = level > constant::MAX_MIXING_TANK_LEVEL ? constant::MAX_MIXING_TANK_LEVEL : level;
-        float ratio = level / constant::MAX_MIXING_TANK_LEVEL;
         int fill_w = (int)(ratio * bar_w);
 
-        // Labels: 0% and 100%
         _tft.setTextColor(production::COL_TEXT_FAINT, production::COL_BG);
         _tft.setTextDatum(MR_DATUM);
         _tft.drawString("0%", bar_x - 4, bar_y + bar_h / 2, 1);
         _tft.setTextDatum(ML_DATUM);
         _tft.drawString("100%", bar_x + bar_w + 4, bar_y + bar_h / 2, 1);
 
-        // Bar background (empty)
         _tft.fillRoundRect(bar_x, bar_y, bar_w, bar_h, 4, production::COL_FOOTER_BG);
 
-        // Bar fill — color shifts blue→cyan as level rises
         uint16_t bar_fill_color = (ratio > 0.75f) ? 0x07FF : 0x001F; // cyan or blue
         if (fill_w > 0)
             _tft.fillRoundRect(bar_x, bar_y, fill_w, bar_h, 4, bar_fill_color);
 
-        // Bar border
         _tft.drawRoundRect(bar_x, bar_y, bar_w, bar_h, 4, production::COL_TEXT_FAINT);
 
-        // ── Numeric reading ───────────────────────────────────────────────────
+        // ── Numeric reading — show filled height ──────────────────────────────
         char level_str[24];
-        snprintf(level_str, sizeof(level_str), "%.1f cm", water_level_cm < 0 ? 0 : water_level_cm);
+        snprintf(level_str, sizeof(level_str), "%.1f cm", filled_cm);
 
         _tft.setTextColor(TFT_WHITE, production::COL_BG);
         _tft.setTextDatum(MC_DATUM);
-        _tft.drawString(level_str, production::SCREEN_W / 2, card_y + 84, 4); // large font
+        _tft.drawString(level_str, production::SCREEN_W / 2, card_y + 84, 4);
 
-        // ── Sub-label below reading ───────────────────────────────────────────
-        // Show percentage
-        char pct_str[16];
-        snprintf(pct_str, sizeof(pct_str), "%.0f%% of %.0f cm", ratio * 100, constant::MAX_MIXING_TANK_LEVEL);
+        // ── Sub-labels ────────────────────────────────────────────────────────
+        char pct_str[32];
+        snprintf(pct_str, sizeof(pct_str), "%.0f%% of %.0f cm",
+                 ratio * 100.0f, usable_cm);
 
         _tft.setTextColor(production::COL_TEXT_FAINT, production::COL_BG);
         _tft.setTextDatum(MC_DATUM);
         _tft.drawString(pct_str, production::SCREEN_W / 2, card_y + 116, 1);
 
-        // Status note
         _tft.setTextColor(production::COL_TEXT_MUT, production::COL_BG);
         _tft.drawString("Filling in progress...", production::SCREEN_W / 2, card_y + 132, 1);
     }
@@ -999,7 +1000,7 @@ namespace tft_ili9488
         int badge_w = 230, badge_h = 32;
         int badge_x = (production::SCREEN_W - badge_w) / 2;
         int badge_y = production::BODY_Y + 14;
-        _tft.fillRoundRect(badge_x, badge_y, badge_w, badge_h, 8, 0x04D9); // teal
+        _tft.fillRoundRect(badge_x, badge_y, badge_w, badge_h, 8, 0x04D9);
         _tft.setTextColor(TFT_WHITE, 0x04D9);
         _tft.setTextDatum(MC_DATUM);
         _tft.drawString("FILLING SETTLING TANK", production::SCREEN_W / 2, badge_y + badge_h / 2, 2);
@@ -1009,66 +1010,63 @@ namespace tft_ili9488
         int card_w = production::SCREEN_W - 40, card_h = 148;
         _tft.drawRoundRect(card_x, card_y, card_w, card_h, 8, production::COL_TEXT_FAINT);
 
-        // Card header: tank label (left) + pump status (right)
         _tft.setTextColor(production::COL_TEXT_MUT, production::COL_BG);
         _tft.setTextDatum(TL_DATUM);
         _tft.drawString("SETTLING TANK", card_x + 12, card_y + 10, 1);
 
-        // Pump 2 indicator
-        uint16_t pump_color = 0x07E0; // green = ON
+        uint16_t pump_color = 0x07E0;
         _tft.fillCircle(card_x + card_w - 70, card_y + 15, 5, pump_color);
         _tft.setTextColor(pump_color, production::COL_BG);
         _tft.setTextDatum(ML_DATUM);
         _tft.drawString("Pump 2  ON", card_x + card_w - 60, card_y + 15, 1);
 
-        // Divider line below card header
         _tft.drawFastHLine(card_x + 1, card_y + 28, card_w - 2, production::COL_FOOTER_BG);
 
-        // ── Water level progress bar ──────────────────────────────────────────
+        // ── Water level computation ───────────────────────────────────────────
+        float dist = water_level_cm < constant::MIN_SETTLING_TANK_LEVEL
+                         ? constant::MIN_SETTLING_TANK_LEVEL
+                         : water_level_cm;
+        dist = dist > constant::MAX_SETTLING_TANK_LEVEL
+                   ? constant::MAX_SETTLING_TANK_LEVEL
+                   : dist;
+
+        float usable_cm = constant::MAX_SETTLING_TANK_LEVEL - constant::MIN_SETTLING_TANK_LEVEL; // 21 cm
+        float filled_cm = constant::MAX_SETTLING_TANK_LEVEL - dist;                              // 0 → 21 cm
+        float ratio = filled_cm / usable_cm;                                                     // 0.0 → 1.0
+
+        // ── Progress bar ──────────────────────────────────────────────────────
         int bar_x = card_x + 40;
         int bar_y = card_y + 42;
         int bar_w = card_w - 80;
         int bar_h = 22;
-
-        float level = water_level_cm < 0 ? 0 : water_level_cm;
-        level = level > constant::MAX_SETTLING_TANK_LEVEL ? constant::MAX_SETTLING_TANK_LEVEL : level;
-        float ratio = level / constant::MAX_SETTLING_TANK_LEVEL;
         int fill_w = (int)(ratio * bar_w);
 
-        // Labels
         _tft.setTextColor(production::COL_TEXT_FAINT, production::COL_BG);
         _tft.setTextDatum(MR_DATUM);
         _tft.drawString("0%", bar_x - 4, bar_y + bar_h / 2, 1);
         _tft.setTextDatum(ML_DATUM);
         _tft.drawString("100%", bar_x + bar_w + 4, bar_y + bar_h / 2, 1);
 
-        // Bar background
         _tft.fillRoundRect(bar_x, bar_y, bar_w, bar_h, 4, production::COL_FOOTER_BG);
 
-        // Bar fill — teal → cyan as level rises, matching settling tank accent
+        uint16_t bar_fill_color = (ratio > 0.75f) ? 0x07FF : 0x04D9; // cyan or teal
         if (fill_w > 0)
-        {
-            uint16_t fill_color = (ratio > 0.75f) ? 0x07FF : 0x04D9; // cyan or teal
-            _tft.fillRoundRect(bar_x, bar_y, fill_w, bar_h, 4, fill_color);
-        }
+            _tft.fillRoundRect(bar_x, bar_y, fill_w, bar_h, 4, bar_fill_color);
 
-        // Bar border
         _tft.drawRoundRect(bar_x, bar_y, bar_w, bar_h, 4, production::COL_TEXT_FAINT);
 
         // ── Numeric reading ───────────────────────────────────────────────────
         char level_str[24];
-        snprintf(level_str, sizeof(level_str), "%.1f cm",
-                 water_level_cm < 0 ? 0.0f : water_level_cm);
+        snprintf(level_str, sizeof(level_str), "%.1f cm", filled_cm);
 
-        _tft.fillRect((production::SCREEN_W / 2) - 60, card_y + 72, 120, 36, production::COL_BG);
         _tft.setTextColor(TFT_WHITE, production::COL_BG);
         _tft.setTextDatum(MC_DATUM);
         _tft.drawString(level_str, production::SCREEN_W / 2, card_y + 84, 4);
 
         // ── Sub-labels ────────────────────────────────────────────────────────
-        char pct_str[24];
+        char pct_str[32];
         snprintf(pct_str, sizeof(pct_str), "%.0f%% of %.0f cm",
-                 ratio * 100, constant::MAX_SETTLING_TANK_LEVEL);
+                 ratio * 100.0f, usable_cm);
 
         _tft.setTextColor(production::COL_TEXT_FAINT, production::COL_BG);
         _tft.setTextDatum(MC_DATUM);
@@ -1077,7 +1075,7 @@ namespace tft_ili9488
         _tft.setTextColor(production::COL_TEXT_MUT, production::COL_BG);
         _tft.drawString("Filling in progress...", production::SCREEN_W / 2, card_y + 132, 1);
     }
-
+    
     void state_settling_ui(const WaterQuality &wq,
                            float elapsed_s,
                            float total_s)
