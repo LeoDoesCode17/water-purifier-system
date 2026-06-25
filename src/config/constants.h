@@ -12,8 +12,10 @@ namespace constant
     constexpr uint8_t CH_PH = 1;
     constexpr float PH_NEUTRAL_VOLTAGE = 2.5f;
     constexpr float ADS_BIT_MV = 0.125f;
-    constexpr float MAX_MIXING_TANK_LEVEL = 7.0;
-    constexpr float MAX_SETTLING_TANK_LEVEL = 9.0;
+    constexpr float MAX_MIXING_TANK_LEVEL = 30.0f;
+    constexpr float MAX_SETTLING_TANK_LEVEL = 30.0f;
+    constexpr float MIN_MIXING_TANK_LEVEL = 7.0f;
+    constexpr float MIN_SETTLING_TANK_LEVEL = 9.0f;
     constexpr ul SENSOR_SAMPLE_COUNT = 200;
     constexpr ul MQTT_RECONNECT_INTERVAL = 5000;
     constexpr float PH_SLOPE = -8.113910;
