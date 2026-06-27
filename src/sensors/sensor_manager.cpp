@@ -109,31 +109,23 @@ namespace sensor_manager
     float get_tds_ppm_value_1()
     {
         float voltage_value = ads1115::get_voltage_value_1(constant::CH_TDS);
-        float compensation_coeff = 1.0f + 0.02f * (get_temperature_c_1() - 25.0f);
+        float raw_temperature = get_temperature_c_1();
+        float final_temperature = raw_temperature > 0 ? raw_temperature : 25.0f; // Default to 25°C if temperature reading is invalid
+        float compensation_coeff = 1.0f + 0.02f * (final_temperature - 25.0f);
         float Vc = voltage_value / compensation_coeff;
         float tds = (133.42f * powf(Vc, 3) - 255.86f * powf(Vc, 2) + 857.39f * Vc) * 0.5f;
         return constrain(tds, 0.0f, 3000.0f);
-
-        // float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
-        // float water_temperature = ds18b20::get_temperature_c_1();
-        // float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
-        // float rough_ppm_value = electrical_conductivity_25 * 0.5;
-        // return rough_ppm_value;
     }
 
     float get_tds_ppm_value_2()
     {
         float voltage_value = ads1115::get_voltage_value_2(constant::CH_TDS);
-        float compensation_coeff = 1.0f + 0.02f * (get_temperature_c_2() - 25.0f);
+        float raw_temperature = get_temperature_c_2();
+        float final_temperature = raw_temperature > 0 ? raw_temperature : 25.0f; // Default to 25°C if temperature reading is invalid
+        float compensation_coeff = 1.0f + 0.02f * (final_temperature - 25.0f);
         float Vc = voltage_value / compensation_coeff;
         float tds = (133.42f * powf(Vc, 3) - 255.86f * powf(Vc, 2) + 857.39f * Vc) * 0.5f;
         return constrain(tds, 0.0f, 3000.0f);
-
-        // float electrical_conductivity = tds_factor * (133.42*pow(voltage_value, 3) - 255.86*pow(voltage_value, 2) + 857.39*voltage_value);
-        // float water_temperature = ds18b20::get_temperature_c_2();
-        // float electrical_conductivity_25 = electrical_conductivity / (1 + 0.02*(water_temperature - 25.0));
-        // float rough_ppm_value = electrical_conductivity_25 * 0.5;
-        // return rough_ppm_value;
     }
 
     float get_water_volume_liter(float water_level_cm)
