@@ -39,6 +39,6 @@ namespace actuator_manager {
         pump::off_2();
     }
     float get_opening_servo_time_by_dose_ms(float moringa_dose) {
-        return 0.0;
+        return 5000.0;
     }
 }
