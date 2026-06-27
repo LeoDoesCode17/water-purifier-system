@@ -36,7 +36,8 @@ enum state_machine {
     SETTLING, 
     FILLING_SETTLING_TANK,
     COMPLETED, 
-    FAILED
+    FAILED,
+    UNDEFINED
 };
 
 enum device_status {
