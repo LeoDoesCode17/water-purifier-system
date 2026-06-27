@@ -40,7 +40,7 @@ namespace constant
     constexpr ul SECOND_TO_MILISECONDS = 1000;
     constexpr ul PUBLISH_SETTLING_INTERVAL_MS = 1000;
     constexpr ul PUBLISH_STATUS_INTERVAL_MS = 5000;
-    constexpr ul SETTLING_TIME_MS = 3600000;
+    constexpr ul SETTLING_TIME_MS = 1800000;
     constexpr ul MAIN_LOOP_INTERVAL_MS = 10;
     constexpr ul DISPLAY_DURATION_MS = 5000;
 }
