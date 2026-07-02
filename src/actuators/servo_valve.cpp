@@ -10,7 +10,7 @@ namespace servo_valve
 {
     void initialize()
     {
-        servoValve.attach(pins::SERVO_VALVE_PIN, 500, 2500);
+        servoValve.attach(SERVO_VALVE_PIN, 500, 2500);
         servoValve.write(SERVO_CLOSE_ANGLE);
         delay(500);
     }

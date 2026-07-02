@@ -4,7 +4,7 @@
 #include "config/pins.h"
 #include "config/secrets.h"
 
-static OneWire one_wire(pins::DQ_PIN);
+static OneWire one_wire(DQ_PIN);
 static DallasTemperature ds_sensor(&one_wire);
 
 namespace ds18b20 {

@@ -3,12 +3,12 @@
 #include <Arduino.h>
 namespace gear_motor {
     void initialize() {
-        pinMode(pins::GEAR_MOTOR_PIN, OUTPUT);
+        pinMode(GEAR_MOTOR_PIN, OUTPUT);
     }
     void on() {
-        digitalWrite(pins::GEAR_MOTOR_PIN, HIGH);
+        digitalWrite(GEAR_MOTOR_PIN, HIGH);
     }
     void off() {
-        digitalWrite(pins::GEAR_MOTOR_PIN, LOW);
+        digitalWrite(GEAR_MOTOR_PIN, LOW);
     }
 }

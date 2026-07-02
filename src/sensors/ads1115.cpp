@@ -36,7 +36,7 @@ namespace ads1115 {
         bool success = true;
         
         // Initialize I2C
-        Wire.begin(pins::SDA_PIN, pins::SCL_PIN);
+        Wire.begin(SDA_PIN, SCL_PIN);
 
         // Initialize Module 1
         if (!ads_1.begin(constant::ADS1115_ADDRESS_1)) {
