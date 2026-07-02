@@ -1,7 +1,8 @@
-#include "displays/tft_ili9488.h"
-#include <TFT_eSPI.h>
-#include <Arduino.h>
+#include "config/pins.h"
 #include "config/constants.h"
+#include "displays/tft_ili9488.h"
+#include <Arduino.h>
+#include <TFT_eSPI.h>
 
 static TFT_eSPI _tft = TFT_eSPI();
 
