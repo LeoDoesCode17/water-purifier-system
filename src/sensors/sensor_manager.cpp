@@ -1,9 +1,9 @@
+#include "config/pins.h"
 #include "sensors/sensor_manager.h"
 #include "sensors/ultrasonic.h"
 #include "sensors/ds18b20.h"
 #include "sensors/ads1115.h"
 #include "config/constants.h"
-#include "config/pins.h"
 #include <Arduino.h>
 #include <math.h>
 
@@ -38,7 +38,7 @@ namespace sensor_manager
         delayMicroseconds(10);
         ultrasonic::trigger_sensor_1_low();
 
-        long duration_echo_high = pulseIn(pins::ECHO_1_PIN, HIGH);
+        long duration_echo_high = pulseIn(ECHO_1_PIN, HIGH);
         float distance = (duration_echo_high * SPEED_SOUND_CM_PER_MICROSECONDS) / 2;
         return distance;
     }
@@ -54,7 +54,7 @@ namespace sensor_manager
         delayMicroseconds(10);
         ultrasonic::trigger_sensor_2_low();
 
-        long duration_echo_high = pulseIn(pins::ECHO_2_PIN, HIGH);
+        long duration_echo_high = pulseIn(ECHO_2_PIN, HIGH);
         float distance = (duration_echo_high * SPEED_SOUND_CM_PER_MICROSECONDS) / 2;
         return distance;
     }
