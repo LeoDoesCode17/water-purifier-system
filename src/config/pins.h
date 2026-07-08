@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(CONFIG_IDF_TARGET_ESP32S3)
+#if defined(BOARD_ESP32S3_DEVKITC)
 
 // TFT
 #define TFT_MISO 38
@@ -24,7 +24,7 @@
 #define ECHO_2_PIN 13
 #define DQ_PIN 14
 
-#elif defined(CONFIG_IDF_TARGET_ESP32)
+#elif defined(BOARD_ESP32_DEVKIT)
 
 // TFT
 #define TFT_MISO 19
