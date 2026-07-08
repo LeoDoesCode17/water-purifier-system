@@ -40,24 +40,24 @@ ul time_now = millis();
 // ON MESSAGE FOR DEVELOPING
 void handle_collect_data(JsonDocument &doc)
 {
-  float coagulant_dose = doc["coagulant_dose"] | -1.0f;
-  int time_mixing = doc["time_mixing"] | -1;
+  float coagulant_dose_gram = doc["coagulant_dose_gram"] | -1.0f;
+  int time_mixing_minutes = doc["time_mixing_minutes"] | -1;
 
-  if (coagulant_dose < 0 || time_mixing < 0)
+  if (coagulant_dose_gram < 0 || time_mixing_minutes < 0)
   {
     Serial.println("[EVENT] Missing or invalid fields in collect_data payload");
     return;
   }
   Serial.print("[EVENT] Coagulant dose : ");
-  Serial.print(coagulant_dose);
+  Serial.print(coagulant_dose_gram);
   Serial.println(" g");
 
   Serial.print("[EVENT] Time mixing    : ");
-  Serial.print(time_mixing);
+  Serial.print(time_mixing_minutes);
   Serial.println(" min");
 
-  global_mixing_time_seconds = time_mixing * 60.0;
-  global_moringa_dose_gram = coagulant_dose;
+  global_mixing_time_seconds = time_mixing_minutes * 60.0;
+  global_moringa_dose_gram = coagulant_dose_gram;
 
   state_machine = DOSING;
 }
@@ -165,20 +165,20 @@ void setup()
 {
   Serial.begin(constant::BAUD_RATE);
 
-  is_development ? display_manager::initialize_development() : display_manager::initialize_production();
+  display_manager::initialize_production();
+  display_manager::state_idle_ui();
 
   sensor_manager::initialize_all();
   actuator_manager::initialize();
   delay(1000);
 
-  display_manager::_draw_labels();
+  network_manager::initialize();
+  network_manager::mqtt_set_callback(on_mqtt_message);
+  network_manager::mqtt_connect();
+  delay(1000);
 
-  // network_manager::initialize();
-  // network_manager::mqtt_set_callback(on_mqtt_message);
-  // network_manager::mqtt_connect();
-  // delay(1000);
-
-  // ai_manager::initialize();
+  ai_manager::initialize();
+  state_machine = IDLE;
 }
 
 void loop()
@@ -194,22 +194,16 @@ void loop()
     // STATE MACHINE IDLE
     if (state_machine == IDLE)
     {
-      display_manager::state_idle_ui();
       if (millis() - last_publish_status >= constant::PUBLISH_STATUS_INTERVAL_MS)
       {
         last_publish_status = millis();
         network_manager::mqtt_publish_status();
       }
 
-      // display_manager::ili9488_println("[STATE MACHINE] State is in IDLE");
-      // TODO: MUST BE ACTIVATED IF BUTTON IS PRESSED BUT FOR NOW AUTOMATICALLY START
-      state_machine = FILLING_MIXING_TANK;
-      // display_manager::ili9488_println("[STATE MACHINE] State is in FILLING_MIXING_TANK");
-      // display_manager::ili9488_println("[ACTUATOR] Turn on pump 1");
-      actuator_manager::turn_on_pump_1();
+      // Receive input from rotary encoder
     }
 
-    // STATE MACHINE FILLING MIXING TANK
+    // STATE MACHINE FILLING MIXING TANK (ACTUATOR PUMP 1 ON)
     else if (state_machine == FILLING_MIXING_TANK)
     {
       float water_level = sensor_manager::get_distance_ultrasonic_1();
@@ -222,7 +216,10 @@ void loop()
       // display_manager::ili9488_print("[FILLING TANK] Filling the tank until ");
       // display_manager::ili9488_println(constant::MAX_MIXING_TANK_LEVEL, 2);
       Serial.print("[FILLING TANK] Filling the tank until ");
-      Serial.println(constant::MAX_MIXING_TANK_LEVEL, 2);
+      Serial.print(constant::MAX_MIXING_TANK_LEVEL, 2);
+      Serial.print(" with current level is ");
+      Serial.println(water_level);
+      delay(1000);
     }
 
     // STATE MACHINE RAW SAMPLING
@@ -288,14 +285,13 @@ void loop()
       // display_manager::ili9488_println("[STATE MACHINE] State is in MEASURE MORINGA");
     }
 
-    // STATE MACHINE MEASURE MORINGA
+    // STATE MACHINE MEASURE MORINGA (AI PREDICTION)
     else if (state_machine == MEASURE_MORINGA)
     {
       // display_manager::ili9488_println("[MEASURE MORINGA] AI predict moringa dose and mixing time");
       ai_manager::predict(global_wq);
       global_moringa_dose_gram = ai_manager::get_moringa_dose_gram();
       global_mixing_time_seconds = ai_manager::get_mixing_time_second();
-      opening_servo_valve_time_ms = actuator_manager::get_opening_servo_time_by_dose_ms(global_moringa_dose_gram);
       display_manager::state_ai_measure_ui(global_moringa_dose_gram, global_mixing_time_seconds);
       delay(4000);
       // display_manager::ili9488_print("[MEASURE MORING] AI predicted moringa dose ");
@@ -306,9 +302,10 @@ void loop()
       // display_manager::ili9488_println("[STATE MACHINE] State is in DOSING");
     }
 
-    // STATE MACHINE DOSING
+    // STATE MACHINE DOSING (ACTUATOR SERVO VALVE OPEN)
     else if (state_machine == DOSING)
     {
+      opening_servo_valve_time_ms = actuator_manager::get_opening_servo_time_by_dose_ms(global_moringa_dose_gram);
       static bool dosing_initialized = false;
       static unsigned long dosing_start_ms = 0;
 
@@ -317,6 +314,7 @@ void loop()
         dosing_initialized = true;
         dosing_start_ms = millis();
         actuator_manager::openServoValve();
+        Serial.println("[ACTUATOR] Servo valve open");
         display_manager::state_dosing_ui(0.0f,
                                          opening_servo_valve_time_ms / 1000.0f); // draw once immediately
       }
@@ -336,16 +334,16 @@ void loop()
       if (millis() - dosing_start_ms >= opening_servo_valve_time_ms)
       {
         actuator_manager::closeServoValve();
-
+        Serial.println("[ACTUATOR] Servo valve close");
         // Reset statics for next cycle
         dosing_initialized = false;
         last_display_s = -1.0f;
-
+        delay(2000);
         state_machine = MIXING;
       }
     }
 
-    // STATE MACHINE MIXING
+    // STATE MACHINE MIXING (ACTUATOR GEAR MOTOR ON)
     else if (state_machine == MIXING)
     {
       static bool mixing_initialized = false;
@@ -355,6 +353,7 @@ void loop()
       {
         mixing_initialized = true;
         mixing_start_ms = millis();
+        global_mixing_time_seconds = 10000;
         actuator_manager::turnOnGearMotor();
         display_manager::state_mixing_ui(0.0f,
                                          global_mixing_time_seconds / 1000.0f); // draw once immediately
@@ -385,7 +384,7 @@ void loop()
       }
     }
 
-    // STATE MACHINE FILLING SETTLING TANK
+    // STATE MACHINE FILLING SETTLING TANK (ACTUATOR PUMP 2 ON)
     else if (state_machine == FILLING_SETTLING_TANK)
     {
       static bool pump2_started = false;
@@ -393,10 +392,10 @@ void loop()
       if (!pump2_started)
       {
         pump2_started = true;
-        actuator_manager::turn_on_pump_2();
+        // actuator_manager::turn_on_pump_2();
       }
 
-      float water_level = sensor_manager::get_distance_ultrasonic_2();
+      float water_level = sensor_manager::get_distance_ultrasonic_1();
 
       display_manager::state_filling_settling_tank_ui(water_level);
 
@@ -410,13 +409,18 @@ void loop()
         current_time = millis();
         state_machine = SETTLING;
       }
+      Serial.print("[FILLING TANK] Filling the tank until ");
+      Serial.print(constant::MAX_SETTLING_TANK_LEVEL, 2);
+      Serial.print(" with current level is ");
+      Serial.println(water_level);
+      delay(1000);
     }
 
     // STATE MACHINE SETTLING
     else if (state_machine == SETTLING)
     {
       float elapsed_s = (millis() - current_time) / 1000.0f;
-      float total_s = constant::SETTLING_TIME / 1000.0f;
+      float total_s = constant::SETTLING_TIME_MS / 1000.0f;
 
       // Publish sensor data at configured interval
       if (millis() - last_publish_settling_data >= constant::PUBLISH_SETTLING_INTERVAL_MS)
@@ -424,11 +428,11 @@ void loop()
         last_publish_settling_data = millis();
         sensor_manager::update_all();
 
-        float distance_2 = sensor_manager::get_distance_ultrasonic_2();
-        float temperature_2 = sensor_manager::get_temperature_c_2();
-        float ntu_2 = sensor_manager::get_turbidity_ntu_value_2();
-        float ph_2 = sensor_manager::get_ph_value_2();
-        float ppm_2 = sensor_manager::get_tds_ppm_value_2();
+        float distance_2 = sensor_manager::get_distance_ultrasonic_1();
+        float temperature_2 = sensor_manager::get_temperature_c_1();
+        float ntu_2 = sensor_manager::get_turbidity_ntu_value_1();
+        float ph_2 = sensor_manager::get_ph_value_1();
+        float ppm_2 = sensor_manager::get_tds_ppm_value_1();
         float volume_2 = sensor_manager::get_water_volume_liter(distance_2);
 
         WaterQuality water_quality = {
@@ -458,13 +462,13 @@ void loop()
         }
       }
 
-      if (millis() - current_time >= constant::SETTLING_TIME)
+      if (millis() - current_time >= constant::SETTLING_TIME_MS)
       {
         state_machine = COMPLETED;
       }
     }
 
-    // STATE MACHINE COMPLETED
+    // STATE MACHINE COMPLETED (ACTUATOR PUMP 2 OFF, ACTUATOR GEAR MOTOR OFF, ACTUATOR SERVO VALVE CLOSED)
     else if (state_machine == COMPLETED)
     {
       display_manager::state_completed_ui();
@@ -476,35 +480,39 @@ void loop()
       actuator_manager::turn_off_pump_2();
       actuator_manager::turnOffGearMotor();
 
-      delay(3000);
+      delay(constant::DISPLAY_DURATION_MS);
       state_machine = IDLE;
+      display_manager::state_idle_ui();
     }
 
-    // STATE MACHINE FAILED
+    // STATE MACHINE FAILED (ACTUATOR PUMP 2 OFF, ACTUATOR GEAR MOTOR OFF, ACTUATOR SERVO VALVE CLOSED)
     else if (state_machine == FAILED)
     {
-      // TODO: DISPLAY COMPLETED FAILED
+      display_manager::state_failed_ui("Errors occur"); // pass your reason
+
       // display_manager::ili9488_println("[FAILED] Turn off all actuators");
       actuator_manager::closeServoValve();
       actuator_manager::turn_off_pump_1();
       actuator_manager::turn_off_pump_2();
       actuator_manager::turnOffGearMotor();
+      delay(constant::DISPLAY_DURATION_MS);
       state_machine = IDLE;
+      display_manager::state_idle_ui();
     }
 
-    // STATE MACHINE OTHER
+    // STATE MACHINE OTHER (UNDEFINED) (ACTUATOR PUMP 2 OFF, ACTUATOR GEAR MOTOR OFF, ACTUATOR SERVO VALVE CLOSED)
     else
     {
-      display_manager::state_failed_ui("Sensor read timeout"); // pass your reason
+      display_manager::state_failed_ui("Undefined State Machine"); // pass your reason
 
-      actuator_manager::closeServoValve();
-      actuator_manager::turn_off_pump_1();
-      actuator_manager::turn_off_pump_2();
-      actuator_manager::turnOffGearMotor();
+      // actuator_manager::closeServoValve();
+      // actuator_manager::turn_off_pump_1();
+      // actuator_manager::turn_off_pump_2();
+      // actuator_manager::turnOffGearMotor();
 
-      delay(5000); // longer hold than COMPLETED — operator needs time to note the error
-
-      state_machine = IDLE;
+      delay(constant::DISPLAY_DURATION_MS); // longer hold than COMPLETED — operator needs time to note the error
+      // state_machine = IDLE;
+      display_manager::state_idle_ui();
     }
   }
 }
