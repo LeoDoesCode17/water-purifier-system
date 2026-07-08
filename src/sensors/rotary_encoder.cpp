@@ -6,7 +6,7 @@
 namespace {
   RotaryEncoder encoder(ENCODER_DT_PIN, ENCODER_CLK_PIN, RotaryEncoder::LatchMode::TWO03);
   namespace rotary_encoder {
-    long get_posititon() {
+    long get_position() {
       // Implementation for retrieving the current count of the rotary encoder
       return encoder.getPosition(); // Placeholder return value
     }
