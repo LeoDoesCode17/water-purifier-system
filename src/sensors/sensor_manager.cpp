@@ -3,6 +3,7 @@
 #include "sensors/ultrasonic.h"
 #include "sensors/ds18b20.h"
 #include "sensors/ads1115.h"
+#include "rotary_encoder.h"
 #include "config/constants.h"
 #include <Arduino.h>
 #include <math.h>
@@ -134,5 +135,14 @@ namespace sensor_manager
         float volume_water_ml = water_mass_gr / constant::WATER_DENSITY_GR_PER_ML;
         float volume_water_liter = volume_water_ml / constant::LITER_TO_ML;
         return volume_water_liter;
+    }
+
+    long get_encoder_direction()
+    {
+        return rotary_encoder::get_direction();
+    }
+    long get_encoder_position()
+    {
+        return rotary_encoder::get_position();
     }
 }
