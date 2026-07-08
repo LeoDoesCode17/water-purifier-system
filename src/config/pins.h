@@ -24,6 +24,11 @@
 #define ECHO_2_PIN 13
 #define DQ_PIN 14
 
+// Rotary encoder pin
+#define ENCODER_SW_PIN -1
+#define ENCODER_DT_PIN -1
+#define ENCODER_CLK_PIN -1
+
 #elif defined(BOARD_ESP32_DEVKIT)
 
 // TFT
@@ -47,6 +52,11 @@
 #define TRIG_2_PIN 32
 #define ECHO_2_PIN 33
 #define DQ_PIN 17
+
+// Rotary Encoer pin
+#define ENCODER_SW_PIN -1
+#define ENCODER_DT_PIN -1
+#define ENCODER_CLK_PIN -1
 
 #else
 #error "Unsupported board target"
