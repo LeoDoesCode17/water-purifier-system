@@ -25,9 +25,9 @@
 #define DQ_PIN 14
 
 // Rotary encoder pin
-#define ENCODER_SW_PIN -1
-#define ENCODER_DT_PIN -1
-#define ENCODER_CLK_PIN -1
+#define ENCODER_SW_PIN 42
+#define ENCODER_DT_PIN 41
+#define ENCODER_CLK_PIN 40
 
 #elif defined(BOARD_ESP32_DEVKIT)
 
@@ -54,9 +54,9 @@
 #define DQ_PIN 17
 
 // Rotary Encoer pin
-#define ENCODER_SW_PIN -1
-#define ENCODER_DT_PIN -1
-#define ENCODER_CLK_PIN -1
+#define ENCODER_SW_PIN 15
+#define ENCODER_DT_PIN 33
+#define ENCODER_CLK_PIN 32
 
 #else
 #error "Unsupported board target"
