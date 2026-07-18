@@ -3,8 +3,10 @@
 #include "sensors/ultrasonic.h"
 #include "sensors/ds18b20.h"
 #include "sensors/ads1115.h"
+#include "sensors/rotary_encoder.h"
 #include "rotary_encoder.h"
 #include "config/constants.h"
+#include "config/pins.h"
 #include <Arduino.h>
 #include <math.h>
 
@@ -26,6 +28,7 @@ namespace sensor_manager
         {
             Serial.println("Failed to inialize ads1115 adc module");
         }
+        rotary_encoder::initialize(ENCODER_DT_PIN, ENCODER_CLK_PIN, ENCODER_SW_PIN);
     }
 
     float get_distance_ultrasonic_1()
@@ -139,10 +142,18 @@ namespace sensor_manager
 
     long get_encoder_direction()
     {
-        return rotary_encoder::get_direction();
+        return 0l;
     }
     long get_encoder_position()
     {
-        return rotary_encoder::get_position();
+        return rotary_encoder::getPosition();
+    }
+    void set_encoder_position(long position)
+    {
+        rotary_encoder::setPosition(position);
+    }
+    bool was_encoder_button_pressed()
+    {
+        return rotary_encoder::wasButtonPressed();
     }
 }

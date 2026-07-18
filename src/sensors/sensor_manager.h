@@ -16,5 +16,7 @@ namespace sensor_manager {
     float get_water_volume_liter(float water_level_cm);
     long get_encoder_direction();
     long get_encoder_position();
+    void set_encoder_position(long position);
+    bool was_encoder_button_pressed();
 }
 #endif
