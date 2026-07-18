@@ -27,7 +27,7 @@ namespace _display_manager
         const char *title,
         const std::vector<String> &labels,
         int selected_index,
-        String (*status_of)(int) = nullptr)
+        String (*status_of)(int))
     {
         tft.fillScreen(TFT_BLACK);
 
