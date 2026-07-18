@@ -28,5 +28,8 @@ void MenuPage::on_button_pressed()
         break;
     case 2:
         page_manager::navigate_to(page_manager::PageType::TESTING_ACTUATOR);
+        break;
+    default:
+        break;
     }
 }
