@@ -1,8 +1,10 @@
 #include "page_manager.h"
+#include "menu_page.h"
 #include "sensors/sensor_manager.h"
 
 namespace
 {
+    MenuPage menu_page;
     Page *current_page = nullptr;
     long last_encoder_position = 0;
 } // namespace
@@ -39,7 +41,7 @@ namespace page_manager
         switch (page_type)
         {
         case PageType::MENU:
-            /* code */
+            current_page = &menu_page;
             break;
         case PageType::TESTING_ACTUATOR:
             break;
