@@ -1,0 +1,8 @@
+#include "constants.h"
+
+// This is a small number so that it's easy to read the logs
+const int kInferencesPerCycle = 20;
+const float scaler_mean[FEATURES_NUM] = {292.375, 50.6724999666214, 9.567749977111816, 27.589999985694885, 7.3837500512599945, 168.75, 339.75};
+const float scaler_scale[FEATURES_NUM] = {71.39141667595622, 21.546391680225085, 0.29709415561688557, 1.4562451479917833, 0.8422357583719555, 104.39558180306291, 204.11990961197293};
+const float DUMMY_DATA[FEATURES_NUM] = {225, 27.5, 9.92, 25.5, 6.2, 200, 120};
+// const float DUMMY_DATA[FEATURES_NUM] = {217, 90.4, 9.57, 28.5, 6.2, 50, 120};
